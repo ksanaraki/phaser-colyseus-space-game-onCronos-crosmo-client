@@ -31,7 +31,15 @@ import {
 } from "../styles/Shooter"
 
 import { phaserEvents, Event } from '../events/EventCenter'
-import ChooseRoom from "../components/ChooseRoom"
+import ChooseRoom from '../components/ChooseRoom';
+import CreateRoom from "components/CreateRoom";
+import { Join } from '../styles/Wallet';
+
+enum MultiMode {
+  Create = `create`,
+  Join = `join`,
+  Quick = `quick`
+}
 
 const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => {
 
@@ -53,11 +61,14 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   const [calculating, setCalculating] = useState(false)
   const [isPlayEndless, setIsPlayEndless] = useState(false)
   const [isMultiplayer, setIsMultiplayer] = useState(false)
-  const [isChooseRoom, setIsChooseRoom] = useState(false)
   const [isSetting, setIsSetting] = useState(false)
   const [isLeaderboard, setIsLeaderboard] = useState(false)
   const [isDifficulty, setIsDifficulty] = useState(false)
   const isExitGame = useAppSelector((state) => (state.phaser.isExist))
+
+  const [isViewMulti, setIsViewMulti] = useState<boolean>(false);
+  const [viewMultiMode, setViewMultiMode] = useState<MultiMode | undefined>(undefined);
+  const [showMultiJoin, setShowMultiJoin] = useState<boolean>(false);
 
   const [scores, setScores] = useState(undefined)
   const [keyboard, setKeboard] = useState({
@@ -237,15 +248,39 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
     }
   }
 
-  if (!isPlayEndless && !isMultiplayer) {
+  const viewMultiplay = () => {
+    if(account) {
+      setIsViewMulti(true);
+    }
+    else {
+      setSeverity('error')
+      setNoticeMsg('Please connect your wallet first.')
+      setShowNotice(true)
+    }
+  }
+
+  const quickMulti = () => {
+    /**
+     * Quick Join into Multiplay Rooms
+    */
+    setViewMultiMode(MultiMode.Quick);
+  }
+  const joinMulti = () => {
+    setViewMultiMode(MultiMode.Join);
+    setShowMultiJoin(true);
+  }
+  const createMulti = () => {
+    setViewMultiMode(MultiMode.Create);
+  }
+
+  if (!isPlayEndless && !isViewMulti) {
     ui = <MenuWrapper>
       <Title>
         <img src="assets/images/title.png" alt="title" />
       </Title>
       <Buttons>
         <img className="play" src="assets/images/btn_playendless.png" alt="play endless" onClick={() => playEndless()} />
-        {/* <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => playMultiplayer()} />  */}
-        {/* setIsChooseRoom(true) */}
+        <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => viewMultiplay()} /> 
         <img className="play" src="assets/images/btn_crosmostation.png" alt="enter crosmostation" />
         <img className="setting" src="assets/images/btn_difficulty.png" alt="difficulty" onClick={() => setIsDifficulty(true)} />
         <img className="setting" src="assets/images/btn_highscores.png" alt="high scores" onClick={() => setIsLeaderboard(true)} />
@@ -259,24 +294,47 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         severity={severity}
       />
     </MenuWrapper>
-  } else if (!roomJoined && !loggedIn)
-    ui = <ShooterWrapper>
-      <Wallet
-        craftInstance={craftInstance}
-        shooterInstance={shooterInstance}
-        tokenInstance={tokenInstance}
-        pilotInstance={pilotInstance}
-        account={account}
-        setBg={setBg}
-        setIsGamePlaying={setIsGamePlaying}
-        keyboard={keyboard}
-        isPlayEndless={isPlayEndless}
-        isMultiplayer={isMultiplayer}
-        difficulty={difficulty}
-        setCalculating={setCalculating}
+  } else if(isViewMulti && !isPlayEndless && (!viewMultiMode || viewMultiMode != MultiMode.Create)) {
+    ui = <MenuWrapper>
+      <Title>
+        <img src="assets/images/title.png" alt="title" />
+      </Title>
+      <Buttons>
+        <img className="playmulti" src="assets/images/quick.png" alt="play endless" onClick={() => quickMulti()} />
+        <img className="playmulti" src="assets/images/join.png" alt="play endless" onClick={() => joinMulti()} />
+        <img className="playmulti" src="assets/images/create.png" alt="play endless" onClick={() => createMulti()} />
+      </Buttons>
+      <SettingDiv>
+        <img src="assets/images/btn_setting.png" alt="setting" onClick={() => setIsSetting(true)} />
+      </SettingDiv>
+      <Notice noticeMsg={noticeMsg}
+        showNotice={showNotice}
+        setShowNotice={setShowNotice}
+        severity={severity}
       />
-    </ShooterWrapper>
-  else ui = <GameUI specialKey={keyboard.special} />
+    </MenuWrapper>    
+  } else if(isViewMulti && !isPlayEndless && viewMultiMode && viewMultiMode == MultiMode.Create) {
+    ui = <ShooterWrapper>
+          <CreateRoom />
+        </ShooterWrapper>
+  } else if (!roomJoined && !loggedIn) {
+    ui = <ShooterWrapper>
+          <Wallet
+            craftInstance={craftInstance}
+            shooterInstance={shooterInstance}
+            tokenInstance={tokenInstance}
+            pilotInstance={pilotInstance}
+            account={account}
+            setBg={setBg}
+            setIsGamePlaying={setIsGamePlaying}
+            keyboard={keyboard}
+            isPlayEndless={isPlayEndless}
+            isMultiplayer={isMultiplayer}
+            difficulty={difficulty}
+            setCalculating={setCalculating}
+          />
+        </ShooterWrapper>
+  } else ui = <GameUI specialKey={keyboard.special} />
 
   return (<Wrapper isPlayEndless={isPlayEndless} isMultiplayer={ isMultiplayer}>
     {ui}
@@ -294,13 +352,13 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       period={period}
       setPeriod={setPeriod}
     />}
+    {showMultiJoin && <ChooseRoom
+      setShowMultiJoin={setShowMultiJoin}
+    />}
     {isDifficulty && <Difficulty
       setIsDifficulty={setIsDifficulty}
       difficulty={difficulty}
       setDifficulty={setDifficulty}
-    />}
-    {isChooseRoom && <ChooseRoom
-      setIsChooseRoom={setIsChooseRoom}
     />}
     {calculating && <Box sx={{
       position: 'fixed',

@@ -35,7 +35,10 @@ export const Left = styled.div`
 export const Title = styled.div`
   text-align: center;
   margin-bottom: 10px;
-
+  p {
+    font-size: 48px;
+    color: #FFFFFF;
+  }
   img {
     width: 450px;
   }
@@ -82,6 +85,18 @@ export const SwiperWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .swiper-slide img.create-game {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+  }
+
+  .swiper-slide p.title {
+    position: absolute;
+    color: white;
+    font-size: 36px;
   }
 
   .swiper-slide img.ship {
@@ -224,6 +239,39 @@ export const Join = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white;
+  cursor: pointer;
+`
+
+export const ModeWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img.room {
+    width: 80px;
+    object-fit: cover;
+    opacity: 0.45;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  img.room.selected {
+    opacity: 1 !important
+  }
+`
+
+export const GameMode = styled.div`
+  width: 80px;
+  margin-right: 4px;
+  margin-left: 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  background-image: ${props => props.bgColor};
   color: white;
   cursor: pointer;
 `
