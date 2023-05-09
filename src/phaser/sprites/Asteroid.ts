@@ -45,7 +45,6 @@ class Asteroid extends Entity {
 				if ((value - this.x) > 40 || (value - this.x) < -40)
                     this.x = value;// + this.body.velocity.x * deltaTime;
 				}
-				//console.log("this.x  " , this.x);
 				break
 			case 'y':
 				if (typeof value === 'number') {
@@ -54,18 +53,15 @@ class Asteroid extends Entity {
 				if ((value - this.y) > 40 || (value - this.y) < -40)
                     this.y = value;// + this.body.velocity.y * deltaTime;
                 }
-                //console.log("this.y  " , this.y);
                 break
         case 'speed_x':
           if (typeof value === 'number') {
             this.setVelocityX(value);
-            //console.log("setVelocityX  " , value);
           }
         break
         case 'speed_y':
           if (typeof value === 'number') {
             this.setVelocityY(value);
-            //console.log("setVelocityY  " , value);
           }
           break
 		}
@@ -77,7 +73,6 @@ class Asteroid extends Entity {
     const serverTime = serverTimeChange?.value
     if (serverTime < this._timetemp) return;
     const dt = (curTime - serverTime - deltaTimeFromServer) / 1000.0;
-    //console.log("changes  " , changes);
     changes.map((change: { field: string; value: string | number | boolean }) => {
       this.updateServerDataAsteroid(change.field, change.value, dt)
     })

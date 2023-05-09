@@ -52,6 +52,8 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   const tokenId = useAppSelector((state) => (state.user.tokenId))
   const shipName = useAppSelector((state) => (state.user.shipName))
   const tier = useAppSelector((state) => (state.user.tier))
+  const paid = useAppSelector((state) => (state.user.paid))
+  const team = useAppSelector((state) => (state.user.team))
 
   const [craftInstance, setCraftInstance] = useState(null)
   const [shooterInstance, setShooterInstance] = useState(null)
@@ -110,11 +112,9 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         const tx = await shooterInstance["enterGame"]({ from: account, value: '1000000000000000000' })
         const rc = await tx.wait()
         const event = rc.events
-        console.log('event', event)
         setCalculating(false)
         phaserEvents.emit(Event.PLAY_AGAIN)
       } catch (e) {
-        console.log('error in enterGame', e)
         setSeverity('error')
         setNoticeMsg(`You need 1 CRO to play game`)
         setShowNotice(true)
@@ -215,13 +215,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   })
 
   let ui: JSX.Element
-  // if (!roomJoined) {
-  //   ui = <RoomDialog />
-  // } else if (!loggedIn) {
-  //   ui = <AvatarDialog />
-  // } else {
-  //   ui = <></>
-  // }
 
   const playEndless = () => {
     if (account) {
@@ -260,10 +253,8 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   }
 
   const quickMulti = () => {
-    /**
-     * Quick Join into Multiplay Rooms
-    */
     setViewMultiMode(MultiMode.Quick);
+    setIsMultiplayer(true);
   }
   const joinMulti = () => {
     setViewMultiMode(MultiMode.Join);
@@ -273,7 +264,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
     setViewMultiMode(MultiMode.Create);
   }
 
-  if (!isPlayEndless && !isViewMulti) {
+  if (!isPlayEndless && !isViewMulti && !isMultiplayer) {
     ui = <MenuWrapper>
       <Title>
         <img src="assets/images/title.png" alt="title" />
@@ -294,7 +285,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         severity={severity}
       />
     </MenuWrapper>
-  } else if(isViewMulti && !isPlayEndless && (!viewMultiMode || viewMultiMode != MultiMode.Create)) {
+  } else if(isViewMulti && !isPlayEndless && (!viewMultiMode || viewMultiMode == MultiMode.Join) && !isMultiplayer) {
     ui = <MenuWrapper>
       <Title>
         <img src="assets/images/title.png" alt="title" />
@@ -313,11 +304,11 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         severity={severity}
       />
     </MenuWrapper>    
-  } else if(isViewMulti && !isPlayEndless && viewMultiMode && viewMultiMode == MultiMode.Create) {
+  } else if(isViewMulti && !isPlayEndless && viewMultiMode == MultiMode.Create && !isMultiplayer) {
     ui = <ShooterWrapper>
-          <CreateRoom />
+          <CreateRoom setIsViewMulti={setIsViewMulti} playMultiplayer={playMultiplayer}/>
         </ShooterWrapper>
-  } else if (!roomJoined && !loggedIn) {
+  } else if (!roomJoined) {
     ui = <ShooterWrapper>
           <Wallet
             craftInstance={craftInstance}
@@ -330,6 +321,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
             keyboard={keyboard}
             isPlayEndless={isPlayEndless}
             isMultiplayer={isMultiplayer}
+            viewMultiMode={viewMultiMode}
             difficulty={difficulty}
             setCalculating={setCalculating}
           />
@@ -352,8 +344,10 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       period={period}
       setPeriod={setPeriod}
     />}
-    {showMultiJoin && <ChooseRoom
+    {(isViewMulti && showMultiJoin) && <ChooseRoom
       setShowMultiJoin={setShowMultiJoin}
+      setIsViewMulti={setIsViewMulti}
+      playMultiplayer={playMultiplayer}
     />}
     {isDifficulty && <Difficulty
       setIsDifficulty={setIsDifficulty}

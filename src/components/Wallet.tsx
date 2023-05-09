@@ -3,8 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { BigNumber } from 'bignumber.js'
 
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox';
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import SwiperCore, { Navigation } from 'swiper'
@@ -13,7 +19,7 @@ import 'swiper/components/navigation/navigation.min.css'
 
 import store from '../stores'
 import { useAppSelector } from '../hooks'
-import { setTokenId, setShipName, setTier } from '../stores/UserStore'
+import { setTokenId, setShipName, setTier, setPaid, setTeam } from '../stores/UserStore'
 import api from '../api'
 
 import { shooterContractAddr } from '../web3/config/env'
@@ -35,16 +41,22 @@ import {
   Reward,
   UpdateLevel,
   Join
-} from '../styles/Wallet'
+} from '../styles/Wallet';
 
 import PhaserGame from '../phaser/PhaserGame'
 import Boot from '../phaser/scenes/BootScene'
 
-SwiperCore.use([Navigation])
+SwiperCore.use([Navigation]);
+
+enum MultiMode {
+  Create = `create`,
+  Join = `join`,
+  Quick = `quick`
+}
 
 const Wallet = (props) => {
 
-  const { craftInstance, shooterInstance, tokenInstance, pilotInstance, account, setBg, setIsGamePlaying, keyboard, isPlayEndless,isMultiplayer, difficulty, setCalculating } = props
+  const { craftInstance, shooterInstance, tokenInstance, pilotInstance, account, setBg, setIsGamePlaying, keyboard, isPlayEndless,isMultiplayer, difficulty, setCalculating, viewMultiMode } = props
 
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
   const navigate = useNavigate()
@@ -59,6 +71,8 @@ const Wallet = (props) => {
   const [rewardBalance, setRewardBalance] = useState(0)
   const [tokenBalance, setTokenBalance] = useState(0)
   const [avatarIndex, setAvatarIndex] = useState(0)
+  const [isPaid, setIsPaid] = useState<boolean>(false);
+  const [playerTeam, setPlayerTeam] = useState<number | null>(null);
   const boot = PhaserGame.scene.keys.boot as Boot
 
 
@@ -67,10 +81,9 @@ const Wallet = (props) => {
       // darkhorse
       await getAvatar()
       // handleJoin()
-      console.log("in wallet.tsx", isMultiplayer, isPlayEndless);
     }
     (isPlayEndless|| isMultiplayer) && init()
-  }, [isPlayEndless,isMultiplayer])
+  }, [isPlayEndless, isMultiplayer])
 
   const getAvatar = async () => {
     setStep('fetching');
@@ -80,13 +93,12 @@ const Wallet = (props) => {
     const resToken = await tokenInstance["balanceOf"](account);
     setTokenBalance(Number(resToken) / Math.pow(10, 6))
 
-    let tokenIDs: any[];
-    Config.VERSION != `DEV` ? tokenIDs = await craftInstance["walletOfOwner"](account) : tokenIDs = [1, 2, 3, 4, 5];
+    const tokenIDs: any[] = await craftInstance["walletOfOwner"](account);
 
     if(Array.isArray(tokenIDs) && tokenIDs.length){
-      const baseURI = "https://ipfs.io/ipfs/QmVPpQFBgmE4tHYfXVrs6vCDjuHXc1tRXyVxjZ9ZUqLf4s/"
+      const baseURI = "https://ipfs.filebase.io/ipfs/QmVPpQFBgmE4tHYfXVrs6vCDjuHXc1tRXyVxjZ9ZUqLf4s"
       const tokenDatas = await Promise.all(
-        tokenIDs.map(id => (axios.get(`${baseURI}${id}.json`)))
+        tokenIDs.map(id => (axios.get(`${baseURI}/${id}.json`)))
       ).catch(function(err){
           console.log("Getting Token Meta Datas is failed" + err.message)
           setSeverity('error')
@@ -139,7 +151,7 @@ const Wallet = (props) => {
 
   const handleJoin = async () => {
     setCalculating(true)
-    if (Config.VERSION != "DEV")
+    if (Config.VERSION != "DEV" && isPaid)
     {try {
       const tx = await shooterInstance["enterGame"]({ from: account, value: '1000000000000000000' })
       const rc = await tx.wait()
@@ -168,8 +180,11 @@ const Wallet = (props) => {
    
     store.dispatch(setTokenId(crafts[avatarIndex].tokenId))
     store.dispatch(setShipName(crafts[avatarIndex].name))
+    store.dispatch(setPaid(isPaid))
+    store.dispatch(setTeam(playerTeam))
     store.dispatch(setTier(crafts[avatarIndex].tier))
-    const shipPros = {...crafts[avatarIndex], account:account}
+    console.log(`playerTeam`, playerTeam);
+    const shipPros = {...crafts[avatarIndex], account:account, paid: isPaid, team: playerTeam}
     
     const gameProps = {
       hasCombat: hasCombat,
@@ -182,17 +197,17 @@ const Wallet = (props) => {
       setNoticeMsg("Your craft is damaged.")
       setShowNotice(true)
     } else {
-      if (isMultiplayer) {
-        console.log("multiplayer mode")
+      if (isMultiplayer && viewMultiMode != MultiMode.Quick) {
         if (lobbyJoined) {
-          boot._network
-            .joinOrCreatePublic()
-            .then(() => {
-              boot.startMultiGame(shipPros, gameProps)
-              setIsGamePlaying(true)
-              setBg('')
-            })
-            .catch((error) => console.error('error in joinOrCreatePublic', error))
+          // boot._network
+          //   .joinOrCreatePublic()
+          //   .then(() => {
+
+          //   })
+          //   .catch((error) => console.error('error in joinOrCreatePublic', error))
+          boot.startMultiGame(shipPros, gameProps)
+          setIsGamePlaying(true)
+          setBg('')
         } else {
           setSeverity('error')
           setNoticeMsg('Trying to connect to server, please try again!')
@@ -204,7 +219,7 @@ const Wallet = (props) => {
           boot._network
           .joinOrCreatePublic()
           .then(() => {
-            boot.startGame(shipPros, gameProps)
+            boot.startMultiGame(shipPros, gameProps)
             setIsGamePlaying(true)
             setBg('')
           })
@@ -373,11 +388,40 @@ const Wallet = (props) => {
               <Reward>
                 $CROSMO Balance: {tokenBalance.toFixed(1)}
               </Reward>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setPlayerTeam(Number((event.target as HTMLInputElement).value) || null)
+                }}
+                sx={{
+                  '& *': {color: `white`, borderColor: `white`}
+                }}
+              >
+                <FormControlLabel 
+                  value="1"
+                  control={
+                    <Radio />
+                  } 
+                  label="Allied" 
+                />
+                <FormControlLabel
+                  value="2" 
+                  control={<Radio />} 
+                  label="Axis"
+                />
+              </RadioGroup>
               <UpdateLevel onClick={updateLevel}>
                 {crafts !== undefined && (crafts[avatarIndex]?.tier !== 5 && <>
                   <img src="assets/images/upgrade.png" width={30} height={30} /> to {LEAGUE_NAME[crafts[avatarIndex]?.tier + 1]} : {LEAGUE_PRICE[crafts[avatarIndex]?.tier + 1] * (hasTrader ? 0.95 : 1)}
                 </>)}
               </UpdateLevel>
+              <Reward>
+                <span>Pay for Play?</span> <Checkbox defaultChecked sx={{ '& .MuiSvgIcon-root': { fontSize: 28 }, '& *': {color: `white`, borderColor: `white`} }} checked={isPaid} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setIsPaid(event.target.checked);
+                }}/>
+              </Reward>
               <Join onClick={handleJoin}>
                 PLAY
               </Join>

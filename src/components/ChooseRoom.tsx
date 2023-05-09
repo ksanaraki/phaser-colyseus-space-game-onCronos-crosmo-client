@@ -20,54 +20,44 @@ import {
 import RoomType  from 'interfaces/RoomType';
 import { RoomMode } from 'interfaces/RoomMode';
 import { MapMode } from 'interfaces/MapMode';
+import PhaserGame from 'phaser/PhaserGame';
+import Boot from 'phaser/scenes/BootScene'
 
-const ChooseRoom = ({setShowMultiJoin}) => {
-  const [rooms, setRooms] = useState<RoomType[]>([]);
+const ChooseRoom = ({setShowMultiJoin, setIsViewMulti, playMultiplayer}) => {
+  const [password, setPassword] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [showPasswordError, setShowPasswordError] = useState(false);
+  const [passwordFieldEmpty, setPasswordFieldEmpty] = useState(false);
+  const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined);
   const availableRooms = useAppSelector((state) => state.room.availableRooms);
 
-  useEffect(
-    () => {
-      const tempRooms = [
-        {
-          roomId: 1,
-          population: 3,
-          roomMode: RoomMode.DvD,
-          mapMode: MapMode.Blank,
-          cost: 10
-        },
-        {
-          roomId: 2,
-          population: 2,
-          roomMode: RoomMode.OvO,
-          mapMode: MapMode.Bots,
-          cost: 10
-        },
-        {
-          roomId: 3,
-          population: 4,
-          roomMode: RoomMode.TvT,
-          mapMode: MapMode.Asteroid,
-          cost: 10
-        },
-        {
-          roomId: 4,
-          population: 3,
-          roomMode: RoomMode.DvD,
-          mapMode: MapMode.Blank,
-          cost: 12
-        },
-        {
-          roomId: 5,
-          population: 1,
-          roomMode: RoomMode.DvD,
-          mapMode: MapMode.Blank,
-          cost: 10
+  useEffect(() => {
+  }, [availableRooms]);
+
+  const handleJoinClick = (roomId: string, password: string | null) => {
+    if (!lobbyJoined) return
+    const bootstrap = PhaserGame.scene.keys.boot as Boot
+    bootstrap._network.joinCustomById(roomId, password)
+      .then(
+        () => {
+          setIsViewMulti(false);
+          playMultiplayer();
         }
-      ];
-      setRooms([...tempRooms, ...tempRooms, ...tempRooms]);
-      console.log(`availableRooms`, availableRooms);
-    }, []
-  );
+      )
+      .catch((error) => {
+        console.error(error)
+        if (password) setShowPasswordError(true)
+      })
+  }
+  
+  const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const isValidPassword = password !== ''
+
+    if (isValidPassword === passwordFieldEmpty) setPasswordFieldEmpty(!passwordFieldEmpty)
+    if (isValidPassword) handleJoinClick(selectedRoom, password)
+  }
 
   return (
     <Wrapper>
@@ -98,12 +88,12 @@ const ChooseRoom = ({setShowMultiJoin}) => {
               </Cost>
             </THead>
             <TBody>
-              {rooms?.map((room: RoomType, index: number) => {
+              {availableRooms?.map((room: any, index: number) => {
                 return <TRow 
                   key={index}
                   onClick={
                     () => {
-
+                      handleJoinClick(room?.roomId, null);
                     }
                   }
                 >
@@ -111,20 +101,20 @@ const ChooseRoom = ({setShowMultiJoin}) => {
                   {room?.roomId}
                   </Identify>
                   <Room>
-                  {room?.roomMode}
+                  {room?.metadata?.roomMode}
                   </Room>
                   <MapType>
-                  {room?.mapMode}
+                  {room?.metadata?.mapMode}
                   </MapType>
                   <Population>
-                  {room?.population}
+                  {room?.clients || 0}
                   </Population>
                   <Cost>
-                  {room?.cost}
+                  {room?.metadata?.cost || 0}
                   </Cost>
                 </TRow>
               })}
-              {(!rooms || rooms.length === 0) && <div style={{ textAlign: 'center', marginTop: 20 }}>There is no any rooms!</div>}
+              {(!availableRooms || availableRooms.length === 0) && <div style={{ textAlign: 'center', marginTop: 20 }}>There is no any Room!</div>}
             </TBody>
           </Table>
         </Content>

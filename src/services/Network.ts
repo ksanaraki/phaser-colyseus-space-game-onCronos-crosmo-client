@@ -47,7 +47,6 @@ export default class Network {
    * connected _clients whenever rooms with "realtime listing" have updates
    */
   async joinLobbyRoom() {
-
     this._lobby = await this._client.joinOrCreate(RoomType.LOBBY)
     this._lobby.onMessage('rooms', (rooms) => {
       store.dispatch(setAvailableRooms(rooms))
@@ -65,6 +64,26 @@ export default class Network {
   // method to join the public _lobby
   async joinOrCreatePublic() {
     this._room = await this._client.joinOrCreate(RoomType.PUBLIC)
+    this.initialize()
+  }
+
+  // method to create a custom room
+  async createCustom(roomData: IRoomData) {
+    const { name, password, autoDispose, roomMode, mapMode, cost } = roomData
+    this._room = await this._client.create(RoomType.CUSTOM, {
+      name,
+      password,
+      autoDispose,
+      roomMode,
+      mapMode,
+      cost
+    })
+    this.initialize()
+  }
+
+  // method to join a custom room
+  async joinCustomById(roomId: string, password: string | null) {
+    this._room = await this._client.joinById(roomId, { password })
     this.initialize()
   }
 
@@ -120,8 +139,7 @@ export default class Network {
       console.log("Get bullet create : ", new Date().getTime())
       phaserEvents.emit(Event.BULLET_CREATED, bullet, key);
       // track changes on every child object inside the bullets MapSchema
-      /*bullet.onChange = (changes) => {
-        //console.log("Bullets updated at : ", new Date().getTime(), " Bullets:", key)  
+      /*bullet.onChange = (changes) => {  
         phaserEvents.emit(Event.BULLET_UPDATED, changes, key)
 
         // changes.forEach((change) => {
@@ -273,10 +291,11 @@ export default class Network {
     account: string,
     shipName: string,
     tokenId: number,
-    tier: number
+    tier: number,
+    paid: boolean,
+    team: number | null
   ) {
     let clientTimeNow = this.clientTime();
-    console.log(`this._room`, this._room);
     this._room?.send(Message.UPDATE_PLAYER,
       {
         x: currentX,
@@ -299,7 +318,9 @@ export default class Network {
         account,
         shipName,
         tokenId,
-        tier
+        tier,
+        paid,
+        team
       })
   }
   updateBulletToServer(
@@ -344,7 +365,7 @@ export default class Network {
       })
   }
 
-   clientTime() {
+  clientTime() {
     return new Date().getTime();
   }
   setDtServer2Client(serverTime: number) {

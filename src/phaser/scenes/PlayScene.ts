@@ -48,6 +48,8 @@ class PlayScene extends Phaser.Scene {
 	_account: string
 	_tokenId: string
 	_shipName: string
+	_paid: boolean
+	_team: number | null
 
 	//sprite variables
 	_ships: Phaser.Physics.Arcade.Group
@@ -329,7 +331,8 @@ class PlayScene extends Phaser.Scene {
 		this.initShip(data.shipPros, data.gameProps.hasCombat, data.gameProps.keyboard)
 		this._account = data.shipPros.account
 		this._tokenId = data.shipPros.tokenID
-		this._shipName = data.shipPros.shipName
+		this._paid = data.shipPros.paid
+		this._team = data.shipPros.team
 
 		if (data.shipPros.hasShield) {
 			this._myShip.setShiled(this._airdropDuration)
@@ -842,7 +845,8 @@ class PlayScene extends Phaser.Scene {
 		this.scene.stop("play")
 		this.scene.stop("text")
 		this.scene.launch("gameOver", {
-			score: this._myShip.Score
+			score: this._myShip.Score,
+			paid: this._myShip.paid
 		})
 	}
 

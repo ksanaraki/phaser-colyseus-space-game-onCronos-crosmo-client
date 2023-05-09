@@ -35,7 +35,7 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
   autoFocus: true,
-  scene: [BootScene, PlayScene,MultiplayerScene, TextScene, GameOver],
+  scene: [BootScene, PlayScene, MultiplayerScene, TextScene, GameOver],
 }
 
 const phaserGame = new Phaser.Game(config)

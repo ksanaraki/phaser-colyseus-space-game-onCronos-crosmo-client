@@ -13,6 +13,8 @@ export const userSlice = createSlice({
     tokenId: -1,
     shipName: '',
     tier: 0,
+    paid: false,
+    team: null,
     playerNameMap: new Map(),
   },
   reducers: {
@@ -43,6 +45,12 @@ export const userSlice = createSlice({
     setTier: (state, action: PayloadAction<number>) => {
       state.tier = action.payload
     },
+    setPaid: (state, action: PayloadAction<boolean>) => {
+      state.paid = action.payload
+    },
+    setTeam: (state, action: PayloadAction<number | null>) => {
+      state.team = action.payload
+    },
     setPlayerNameMap: (state, action: PayloadAction<{ id: string; name: string }>) => {
       state.playerNameMap.set(sanitizeId(action.payload.id), action.payload.name)
     },
@@ -61,6 +69,8 @@ export const {
   setJoinLobbyRoom,
   setTokenId,
   setShipName,
+  setPaid,
+  setTeam,
   setTier,
   setPlayerNameMap,
   removePlayerNameMap,

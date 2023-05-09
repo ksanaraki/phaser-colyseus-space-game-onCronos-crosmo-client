@@ -215,6 +215,9 @@ export const Right = styled.div`
 export const Reward = styled.div`
   font-size: 23px;
   text-align: center;
+  span {
+    padding-top: 4px;
+  }
 `
 
 export const UpdateLevel = styled.div`

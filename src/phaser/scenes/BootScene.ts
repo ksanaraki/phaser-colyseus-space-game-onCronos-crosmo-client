@@ -105,7 +105,6 @@ Config.graphicAssets.shipsTypes.forEach((name)=>{
 	}
 
 	startGame(shipPros: any, gameProps: any) {
-		
 		this.scene.stop('boot')
 		this.scene.start('play', {
 			network: this._network,
@@ -113,7 +112,6 @@ Config.graphicAssets.shipsTypes.forEach((name)=>{
 			gameProps: gameProps
 		})	
 		store.dispatch(setRoomJoined(true))
-		
 	}
 	startMultiGame(shipPros: any, gameProps: any) {
 		this.scene.stop('boot')

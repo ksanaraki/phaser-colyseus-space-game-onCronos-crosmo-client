@@ -49,6 +49,8 @@ class MultiplayerScene extends Phaser.Scene {
 	_tokenId: string
 	_shipName: string
 	_mySessionId:string
+	_paid: boolean
+	_team: number | null
 
 	//sprite variables
 	_ships: Phaser.Physics.Arcade.Group
@@ -126,7 +128,6 @@ class MultiplayerScene extends Phaser.Scene {
 		// 	// progress is a value between 0 and 1
 		// 	let percentage = Number(progress * 100);
 		// 	// Set here the label with the precentage
-		// 	console.log("percentage,percentage",percentage);
 		// });    
 		
 	}
@@ -373,6 +374,8 @@ class MultiplayerScene extends Phaser.Scene {
 		this._account = data.shipPros.account
 		this._tokenId = data.shipPros.tokenID
 		this._shipName = data.shipPros.shipName
+		this._paid = data.shipPros.paid
+		this._team = data.shipPros.team
 
 		if (data.shipPros.hasShield) {
 			this._myShip.setShiled(this._airdropDuration)
@@ -821,7 +824,6 @@ class MultiplayerScene extends Phaser.Scene {
     console.log("shipBulletCollision  bullet", bullet, "ship", ship)
     console.log("bullet.owner", bullet._owner, "this._myShip", this._myShip)
 		if (bullet._owner != ship){
-		        console.log("ttttt");
 				if (ship._hasShield) {
 					if (this._isEnableSoundEffect) this._destroyedSound.play()
 					this._particles.bulletImpact.emitParticleAt(ship.x, ship.y)
@@ -832,7 +834,6 @@ class MultiplayerScene extends Phaser.Scene {
 		}
 		if (bullet._owner == this._myShip)
 		 {
-		        console.log("qqqqqqq");
 			 this._myShip.Score += 5;
 		 }
 	}
@@ -1264,7 +1265,8 @@ class MultiplayerScene extends Phaser.Scene {
 		this.scene.stop("multiplay")
 		this.scene.stop("text")
 		this.scene.launch("gameOver", {
-			score: this._myShip.Score
+			score: this._myShip.Score,
+			paid: this._myShip.paid
 		})
 	}
 

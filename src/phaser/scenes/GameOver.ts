@@ -22,7 +22,7 @@ class GameOver extends Phaser.Scene {
     this._shipDamaged = false
   }
 
-  create(data: { score: number }) {
+  create(data: { score: number, paid: boolean }) {
 
     store.dispatch(setGameOver(true))
     Config.fontAssets.gameoverFontStyle.fontSize = '50px'
@@ -33,7 +33,7 @@ class GameOver extends Phaser.Scene {
 
     this._contentText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You did not get any score.', Config.fontAssets.gameoverFontStyle)
     this._contentText.setOrigin(0.5)
-    if (data.score !== 0) this._contentText.setText(`You have reached a score of ${data.score}. \n Sending ${data.score} $CROSMO to rewards balance...`)
+    if (data.score !== 0 && data?.paid) this._contentText.setText(`You have reached a score of ${data.score}. \n Sending ${data.score} $CROSMO to rewards balance...`)
 
     this._mainMenuButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 70, '', Config.fontAssets.gameoverFontStyle)
     this._mainMenuButton.setOrigin(0.5)

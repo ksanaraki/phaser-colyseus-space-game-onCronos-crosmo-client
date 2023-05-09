@@ -127,21 +127,22 @@ export const TRow = styled.div`
 `
 
 export const Identify = styled.div`
-  width: 10%;
+  width: 30%;
+  padding-left: 8px;
 `
 
 export const Room = styled.div`
-  width: 25%;
+  width: 15%;
 `
 
 export const MapType = styled.div`
-  width: 25%;
+  width: 15%;
 `
 
 export const Population = styled.div`
-  width: 25%;
+  width: 20%;
 `
 export const Cost = styled.div`
-  width: 15%;
+  width: 20%;
 `
 

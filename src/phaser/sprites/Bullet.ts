@@ -58,7 +58,6 @@ class Bullet extends Entity {
 		const serverTimeChange = changes.find((change: { field: string; }) => change.field === 'curServerTime')
 		const serverTime = serverTimeChange.value
 		if (serverTime < this._timetemp) return;
-		// console.log("serverTime,curTime,deltaTimeFromServer:   ",serverTime,curTime,deltaTimeFromServer)
 		const dt = (curTime - serverTime-deltaTimeFromServer)/1000.0;
 		changes.map((change: { field: string; value: string | number | boolean; }) => {
 		  this.updateServerDataBullet(change.field, change.value, dt)

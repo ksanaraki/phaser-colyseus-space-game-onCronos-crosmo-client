@@ -12,6 +12,8 @@ class MyShip extends Ship {
   _account: string
   _tokenId: number
   _shipName: string
+  _paid: boolean
+  _team: number | null
 
   _score: number
   _vulnerable: boolean
@@ -39,7 +41,6 @@ class MyShip extends Ship {
     // ship play settings
     this._maxVelocity = Config.shipPros.maxVelocity
     this.Score = 0
-
     this._angularVelocity = Config.shipPros.angularVelocity
     this._acceleration = Config.shipPros.acceleration
     this._vulnerable = true
@@ -65,6 +66,8 @@ class MyShip extends Ship {
     this._account = shipPros?.account;
     this._tokenId = shipPros?.tokenId;
     this._shipName = shipPros?.name;
+    this._paid = shipPros?.paid;
+    this._team = shipPros?.team;
   }
 
   get Score() {
@@ -176,7 +179,9 @@ class MyShip extends Ship {
         this._account,
         this._shipName,
         this._tokenId,
-        this._tier
+        this._tier,
+        this._paid,
+        this._team
       )      
     }
   }
