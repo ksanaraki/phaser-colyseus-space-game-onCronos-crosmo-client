@@ -50,7 +50,7 @@ class MultiplayerScene extends Phaser.Scene {
 	_shipName: string
 	_mySessionId:string
 	_paid: boolean
-	_team: number | null
+	_team: number
 
 	//sprite variables
 	_ships: Phaser.Physics.Arcade.Group

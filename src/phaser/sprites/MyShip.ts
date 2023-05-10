@@ -4,6 +4,8 @@ import Network from '../../services/Network'
 import Ship from "./Ship"
 import Config from "./../../types/config/config"
 
+import { JoystickMovement } from 'components/Joystick'
+
 class MyShip extends Ship {
 
   _shipBody: any
@@ -13,7 +15,7 @@ class MyShip extends Ship {
   _tokenId: number
   _shipName: string
   _paid: boolean
-  _team: number | null
+  _team: number
 
   _score: number
   _vulnerable: boolean
@@ -34,6 +36,8 @@ class MyShip extends Ship {
   //for server update
   _curSpeedX:any
   _curSpeedY:any
+
+  public joystickMovement?: JoystickMovement
 
 
   constructor({ sargs, id, shipPros, hasCombat, inputKeys: { forward, brake, left, right, fire } }) {
@@ -104,6 +108,10 @@ class MyShip extends Ship {
       }, null, this)
   }
 
+  handleJoystickMovement(movement: JoystickMovement) {
+    this.joystickMovement = movement
+  }
+
   update(time: number, delta: number) {
     this._gunModule.update(time, delta)
     this._lazerEffect.setAngle(this.angleBack)
@@ -112,7 +120,18 @@ class MyShip extends Ship {
     if (this._hasLazer) this._lazerEffect.start()
     else this._lazerEffect.stop()
 
-    if (this._forwardKey.isDown) {
+    let joystickLeft = false;
+    let joystickRight = false;
+    let joystickUp = false;
+    let joystickDown = false;
+    if (this.joystickMovement?.isMoving) {
+      joystickLeft = this.joystickMovement.direction.left;
+      joystickRight = this.joystickMovement.direction.right;
+      joystickUp = this.joystickMovement.direction.up;
+      joystickDown = this.joystickMovement.direction.down;
+    }
+
+    if (this._forwardKey.isDown || joystickUp) {
       this.setMaxVelocity(this._maxVelocity)
 
       // Ensure that the engine particle system is correctly set up
@@ -133,7 +152,7 @@ class MyShip extends Ship {
       // this.anims.stop()
     }
     
-    if (this._brakeKey.isDown) {
+    if (this._brakeKey.isDown || joystickDown) {
       let maxVelocity = this._maxVelocity
       maxVelocity = maxVelocity / 3
       this.setMaxVelocity(maxVelocity)
@@ -141,9 +160,9 @@ class MyShip extends Ship {
 
     let angularVel = 0
     // Set angular velocity
-    if (this._leftKey.isDown) {
+    if (this._leftKey.isDown || joystickLeft) {
       angularVel += -this._angularVelocity
-    } else if (this._rightKey.isDown) {
+    } else if (this._rightKey.isDown || joystickRight) {
       angularVel += this._angularVelocity
     }
     this.setAngularVelocity(angularVel)

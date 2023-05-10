@@ -34,6 +34,7 @@ import { phaserEvents, Event } from '../events/EventCenter'
 import ChooseRoom from '../components/ChooseRoom';
 import CreateRoom from "components/CreateRoom";
 import { Join } from '../styles/Wallet';
+import MobileVirtualJoystick from "components/MobileVirtualJoystick"
 
 enum MultiMode {
   Create = `create`,
@@ -326,7 +327,10 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
             setCalculating={setCalculating}
           />
         </ShooterWrapper>
-  } else ui = <GameUI specialKey={keyboard.special} />
+  } else ui = <>
+                <GameUI specialKey={keyboard.special} />
+                <MobileVirtualJoystick />
+              </>
 
   return (<Wrapper isPlayEndless={isPlayEndless} isMultiplayer={ isMultiplayer}>
     {ui}

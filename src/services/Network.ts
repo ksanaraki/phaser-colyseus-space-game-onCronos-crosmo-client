@@ -293,7 +293,7 @@ export default class Network {
     tokenId: number,
     tier: number,
     paid: boolean,
-    team: number | null
+    team: number
   ) {
     let clientTimeNow = this.clientTime();
     this._room?.send(Message.UPDATE_PLAYER,

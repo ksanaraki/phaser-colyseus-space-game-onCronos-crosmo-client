@@ -72,7 +72,7 @@ const Wallet = (props) => {
   const [tokenBalance, setTokenBalance] = useState(0)
   const [avatarIndex, setAvatarIndex] = useState(0)
   const [isPaid, setIsPaid] = useState<boolean>(false);
-  const [playerTeam, setPlayerTeam] = useState<number | null>(null);
+  const [playerTeam, setPlayerTeam] = useState<number>(0);
   const boot = PhaserGame.scene.keys.boot as Boot
 
 

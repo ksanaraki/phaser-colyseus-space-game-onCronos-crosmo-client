@@ -49,7 +49,7 @@ class PlayScene extends Phaser.Scene {
 	_tokenId: string
 	_shipName: string
 	_paid: boolean
-	_team: number | null
+	_team: number
 
 	//sprite variables
 	_ships: Phaser.Physics.Arcade.Group

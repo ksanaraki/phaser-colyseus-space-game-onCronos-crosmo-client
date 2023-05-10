@@ -14,8 +14,9 @@ export const userSlice = createSlice({
     shipName: '',
     tier: 0,
     paid: false,
-    team: null,
+    team: 0,
     playerNameMap: new Map(),
+    showJoystick: true //window.innerWidth < 650
   },
   reducers: {
     setSessionId: (state, action: PayloadAction<string>) => {
@@ -48,7 +49,7 @@ export const userSlice = createSlice({
     setPaid: (state, action: PayloadAction<boolean>) => {
       state.paid = action.payload
     },
-    setTeam: (state, action: PayloadAction<number | null>) => {
+    setTeam: (state, action: PayloadAction<number>) => {
       state.team = action.payload
     },
     setPlayerNameMap: (state, action: PayloadAction<{ id: string; name: string }>) => {
@@ -57,6 +58,9 @@ export const userSlice = createSlice({
     removePlayerNameMap: (state, action: PayloadAction<string>) => {
       state.playerNameMap.delete(sanitizeId(action.payload))
     },
+    setShowJoystick: (state, action: PayloadAction<boolean>) => {
+      state.showJoystick = action.payload
+    }
   },
 })
 
@@ -74,6 +78,7 @@ export const {
   setTier,
   setPlayerNameMap,
   removePlayerNameMap,
+  setShowJoystick
 } = userSlice.actions
 
 export default userSlice.reducer
