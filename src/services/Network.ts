@@ -11,6 +11,8 @@ import {
   setAvailableRooms,
   addAvailableRooms,
   removeAvailableRooms,
+  setPlayerList,
+  setCurPlayer
 } from '../stores/RoomStore'
 import CONFIG from './../types/config/config';
 import api from './../api';
@@ -49,7 +51,7 @@ export default class Network {
   async joinLobbyRoom() {
     this._lobby = await this._client.joinOrCreate(RoomType.LOBBY)
     this._lobby.onMessage('rooms', (rooms) => {
-      store.dispatch(setAvailableRooms(rooms))
+      store.dispatch(setAvailableRooms(rooms));
     })
 
     this._lobby.onMessage('+', ([roomId, room]) => {
@@ -59,6 +61,10 @@ export default class Network {
     this._lobby.onMessage('-', (roomId) => {
       store.dispatch(removeAvailableRooms(roomId))
     })
+  }
+
+  getRoomData () {
+    return {a: this._lobby, b: this._room};
   }
 
   // method to join the public _lobby
@@ -84,7 +90,7 @@ export default class Network {
   // method to join a custom room
   async joinCustomById(roomId: string, password: string | null) {
     this._room = await this._client.joinById(roomId, { password })
-    this.initialize()
+    this.initialize();
   }
 
   
@@ -98,7 +104,13 @@ export default class Network {
     
     // when the server sends room data
     this._room.onMessage(Message.SEND_ROOM_DATA, (content) => {
-      store.dispatch(setJoinedRoomData(content))
+      store.dispatch(setJoinedRoomData(content));
+      //getting dt from server
+      // this.setDtServer2Client(content.serverTime)
+    })
+    this._room.onMessage(Message.GET_PLAYERS, (content) => {
+      store.dispatch(setPlayerList(Object.entries(content?.players).map(([key, val]) => ({id: key, val}))));
+      console.log(`content`, Object.entries(content?.players).map(([key, val]) => ({id: key, val})))
       //getting dt from server
       // this.setDtServer2Client(content.serverTime)
     })
@@ -107,6 +119,7 @@ export default class Network {
     if (this._room.state.players)
     this._room.state.players.onAdd = (player: any, key: string) => {
       if (key === this._mySessionId) return
+      store.dispatch(setCurPlayer(this._mySessionId));
       // track changes on every child object inside the players MapSchema
       player.onChange = (changes) => {
         phaserEvents.emit(Event.PLAYER_UPDATED, changes, key)

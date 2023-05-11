@@ -38,6 +38,7 @@ class MyShip extends Ship {
   _curSpeedY:any
 
   public joystickMovement?: JoystickMovement
+  public fireButtonHandle?: boolean
 
 
   constructor({ sargs, id, shipPros, hasCombat, inputKeys: { forward, brake, left, right, fire } }) {
@@ -112,6 +113,10 @@ class MyShip extends Ship {
     this.joystickMovement = movement
   }
 
+  handleFire(fired: boolean) {
+    this.fireButtonHandle = fired;
+  }
+
   update(time: number, delta: number) {
     this._gunModule.update(time, delta)
     this._lazerEffect.setAngle(this.angleBack)
@@ -124,6 +129,7 @@ class MyShip extends Ship {
     let joystickRight = false;
     let joystickUp = false;
     let joystickDown = false;
+    let fireDown = false;
     if (this.joystickMovement?.isMoving) {
       joystickLeft = this.joystickMovement.direction.left;
       joystickRight = this.joystickMovement.direction.right;
@@ -161,13 +167,42 @@ class MyShip extends Ship {
     let angularVel = 0
     // Set angular velocity
     if (this._leftKey.isDown || joystickLeft) {
+      if(joystickLeft) {
+        this.setMaxVelocity(this._maxVelocity)
+
+        // Ensure that the engine particle system is correctly set up
+        this._engine.setAngle(this.angleBack)
+        this._engine.setSpeed({ min: this.body.velocity.length() - 150, max: this.body.velocity.length() - 100 })
+        this._engine.followOffset.setToPolar(this.rotBack, 25)
+        this._engine.start()
+        // this.anims.play(Config.graphicAssets.lazerEffect.name, this._shipBody)
+        //this._shipBody.velocity.rotate(this.rotation);
+        
+        this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
+        this.scene.physics.velocityFromRotation(this.rotation, this._acceleration, this._shipBody.acceleration)
+      }
+
       angularVel += -this._angularVelocity
     } else if (this._rightKey.isDown || joystickRight) {
+      if(joystickRight) {
+        this.setMaxVelocity(this._maxVelocity)
+
+        // Ensure that the engine particle system is correctly set up
+        this._engine.setAngle(this.angleBack)
+        this._engine.setSpeed({ min: this.body.velocity.length() - 150, max: this.body.velocity.length() - 100 })
+        this._engine.followOffset.setToPolar(this.rotBack, 25)
+        this._engine.start()
+        // this.anims.play(Config.graphicAssets.lazerEffect.name, this._shipBody)
+        //this._shipBody.velocity.rotate(this.rotation);
+        
+        this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
+        this.scene.physics.velocityFromRotation(this.rotation, this._acceleration, this._shipBody.acceleration)
+      }
       angularVel += this._angularVelocity
     }
     this.setAngularVelocity(angularVel)
 
-    if (this._fireKey.isDown) {
+    if (this._fireKey.isDown || this.fireButtonHandle) {
       this._gunModule.setTriggerHeld(true)
     } else {
       this._gunModule.setTriggerHeld(false)

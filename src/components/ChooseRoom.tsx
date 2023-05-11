@@ -33,6 +33,7 @@ const ChooseRoom = ({setShowMultiJoin, setIsViewMulti, playMultiplayer}) => {
   const availableRooms = useAppSelector((state) => state.room.availableRooms);
 
   useEffect(() => {
+    console.log(`availableRooms`, availableRooms);
   }, [availableRooms]);
 
   const handleJoinClick = (roomId: string, password: string | null) => {
@@ -93,9 +94,12 @@ const ChooseRoom = ({setShowMultiJoin, setIsViewMulti, playMultiplayer}) => {
                   key={index}
                   onClick={
                     () => {
-                      handleJoinClick(room?.roomId, null);
+                      if(room?.maxClients > room?.clients) {
+                        handleJoinClick(room?.roomId, null);
+                      }
                     }
                   }
+                  joinable={room?.maxClients > room?.clients ? true : false}
                 >
                   <Identify>
                   {room?.roomId}

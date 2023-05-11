@@ -35,6 +35,8 @@ import ChooseRoom from '../components/ChooseRoom';
 import CreateRoom from "components/CreateRoom";
 import { Join } from '../styles/Wallet';
 import MobileVirtualJoystick from "components/MobileVirtualJoystick"
+import FireButton from "components/FireButton"
+import AtomicButton from "components/AtomicButton"
 
 enum MultiMode {
   Create = `create`,
@@ -51,10 +53,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   const canPlayAgain = useAppSelector((state) => (state.user.canPlayAgain))
   const joinLobbyRoom=useAppSelector((state) => (state.user.joinLobbyRoom))
   const tokenId = useAppSelector((state) => (state.user.tokenId))
-  const shipName = useAppSelector((state) => (state.user.shipName))
-  const tier = useAppSelector((state) => (state.user.tier))
-  const paid = useAppSelector((state) => (state.user.paid))
-  const team = useAppSelector((state) => (state.user.team))
 
   const [craftInstance, setCraftInstance] = useState(null)
   const [shooterInstance, setShooterInstance] = useState(null)
@@ -272,7 +270,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       </Title>
       <Buttons>
         <img className="play" src="assets/images/btn_playendless.png" alt="play endless" onClick={() => playEndless()} />
-        <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => viewMultiplay()} /> 
+        {/* <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => viewMultiplay()} />  */}
         <img className="play" src="assets/images/btn_crosmostation.png" alt="enter crosmostation" />
         <img className="setting" src="assets/images/btn_difficulty.png" alt="difficulty" onClick={() => setIsDifficulty(true)} />
         <img className="setting" src="assets/images/btn_highscores.png" alt="high scores" onClick={() => setIsLeaderboard(true)} />
@@ -329,7 +327,9 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         </ShooterWrapper>
   } else ui = <>
                 <GameUI specialKey={keyboard.special} />
-                <MobileVirtualJoystick />
+                {/* <MobileVirtualJoystick isMultiplayer={isMultiplayer}/>
+                <FireButton isMultiplayer={isMultiplayer}/>
+                <AtomicButton isMultiplayer={isMultiplayer}/> */}
               </>
 
   return (<Wrapper isPlayEndless={isPlayEndless} isMultiplayer={ isMultiplayer}>

@@ -112,6 +112,7 @@ export const TBody = styled.div`
 `
 
 export const TRow = styled.div`
+  opacity: ${props => props?.joinable ? 1 : 0.5};
   background: #40808a;
   border: 1px solid black;
   border-radius: 10px;

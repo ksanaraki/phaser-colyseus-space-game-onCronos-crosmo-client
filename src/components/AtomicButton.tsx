@@ -9,26 +9,18 @@ import Play from 'phaser/scenes/PlayScene';
 import { useAppSelector } from '../hooks'
 import { JoystickMovement } from './Joystick'
 
-const Backdrop = styled.div`
+const FireButtonWrapper = styled.div`
   position: fixed;
   bottom: 100px;
-  left: 32px;
-  max-height: 50%;
-  max-width: 100%;
+  right: 32px;
 `
 
-const Wrapper = styled.div`
-  position: relative;
-  height: 100%;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
+const FireButtonObj = styled.img`;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
 `
 
-const JoystickWrapper = styled.div`
-  margin-top: auto;
-  align-self: flex-end;
-`
 export const minimumScreenWidthSize = 650 //px
 
 const useSmallScreen = (smallScreenSize: number) => {
@@ -43,25 +35,29 @@ const useSmallScreen = (smallScreenSize: number) => {
   return width <= smallScreenSize
 }
 
-export default function MobileVirtualJoystick({isMultiplayer}) {
+export default function AtomicButton({isMultiplayer}) {
   const hasSmallScreen = true; //useSmallScreen(minimumScreenWidthSize)
   const multiGame = PhaserGame.scene.keys.multiplay as Multiplayer;
   const singleGame = PhaserGame.scene.keys.play as Play;
 
-  const handleMovement = (movement: JoystickMovement) => {
-    if (isMultiplayer) multiGame._myShip?.handleJoystickMovement(movement)
-    else singleGame._myShip?.handleJoystickMovement(movement)
+  const handleExplode = (fired: boolean) => {
+    if (isMultiplayer) multiGame._myShip?.handleFire(fired)
+    else singleGame._myShip?.handleFire(fired)
   }
 
   return (
-    <Backdrop>
-      <Wrapper>
-        {hasSmallScreen && (
-          <JoystickWrapper>
-            <JoystickItem onDirectionChange={handleMovement}></JoystickItem>
-          </JoystickWrapper>
-        )}
-      </Wrapper>
-    </Backdrop>
+    <>
+    {hasSmallScreen && (
+      <FireButtonWrapper 
+        onTouchStart={() => handleExplode(true)}
+        onTouchEnd={() => handleExplode(false)}
+      >
+        <FireButtonObj src="assets/images/icon_ATOMIC_BULLET.png" alt="Fire Button">
+        </FireButtonObj>
+      </FireButtonWrapper>
+    )}
+    </>
+
+
   )
 }

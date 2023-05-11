@@ -45,6 +45,7 @@ import {
 
 import PhaserGame from '../phaser/PhaserGame'
 import Boot from '../phaser/scenes/BootScene'
+import Multiplayer from 'phaser/scenes/MultiplayerScene';
 
 SwiperCore.use([Navigation]);
 
@@ -58,7 +59,9 @@ const Wallet = (props) => {
 
   const { craftInstance, shooterInstance, tokenInstance, pilotInstance, account, setBg, setIsGamePlaying, keyboard, isPlayEndless,isMultiplayer, difficulty, setCalculating, viewMultiMode } = props
 
-  const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)
+  const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined);
+  const playerList = useAppSelector((state) => state.room.playerList);
+  const curPlayer = useAppSelector((state) => state.room.curPlayer);
   const navigate = useNavigate()
 
   const [noticeMsg, setNoticeMsg] = useState('')
@@ -73,14 +76,16 @@ const Wallet = (props) => {
   const [avatarIndex, setAvatarIndex] = useState(0)
   const [isPaid, setIsPaid] = useState<boolean>(false);
   const [playerTeam, setPlayerTeam] = useState<number>(0);
-  const boot = PhaserGame.scene.keys.boot as Boot
+  const boot = PhaserGame.scene.keys.boot as Boot;
+  const multi = PhaserGame.scene.keys.multiplay as Multiplayer
 
 
   useEffect(() => {
     const init = async () => {
-      // darkhorse
-      await getAvatar()
-      // handleJoin()
+      await getAvatar();
+      console.log(`_playerId`, multi._myShip?._playerId);
+      console.log(`curPlayers`, playerList);
+      console.log(`cur`, curPlayer);
     }
     (isPlayEndless|| isMultiplayer) && init()
   }, [isPlayEndless, isMultiplayer])
@@ -135,7 +140,6 @@ const Wallet = (props) => {
           damagedLevel:craftStatuses[idx][2]
         }));
         if (craftDatas.length > 0) {
-          console.log(craftDatas);
           setCrafts(craftDatas)
           setStep('fetched')
         } 
@@ -183,7 +187,6 @@ const Wallet = (props) => {
     store.dispatch(setPaid(isPaid))
     store.dispatch(setTeam(playerTeam))
     store.dispatch(setTier(crafts[avatarIndex].tier))
-    console.log(`playerTeam`, playerTeam);
     const shipPros = {...crafts[avatarIndex], account:account, paid: isPaid, team: playerTeam}
     
     const gameProps = {
@@ -199,12 +202,6 @@ const Wallet = (props) => {
     } else {
       if (isMultiplayer && viewMultiMode != MultiMode.Quick) {
         if (lobbyJoined) {
-          // boot._network
-          //   .joinOrCreatePublic()
-          //   .then(() => {
-
-          //   })
-          //   .catch((error) => console.error('error in joinOrCreatePublic', error))
           boot.startMultiGame(shipPros, gameProps)
           setIsGamePlaying(true)
           setBg('')
@@ -219,7 +216,7 @@ const Wallet = (props) => {
           boot._network
           .joinOrCreatePublic()
           .then(() => {
-            boot.startMultiGame(shipPros, gameProps)
+            boot.startGame(shipPros, gameProps)
             setIsGamePlaying(true)
             setBg('')
           })
@@ -399,18 +396,24 @@ const Wallet = (props) => {
                   '& *': {color: `white`, borderColor: `white`}
                 }}
               >
-                <FormControlLabel 
-                  value="1"
-                  control={
-                    <Radio />
-                  } 
-                  label="Allied" 
-                />
-                <FormControlLabel
-                  value="2" 
-                  control={<Radio />} 
-                  label="Axis"
-                />
+                {isMultiplayer && 
+                  <FormControlLabel 
+                    value="1"
+                    control={
+                      <Radio />
+                    } 
+                    label="Allied" 
+                  />
+                }
+                {
+                  isMultiplayer && 
+                  <FormControlLabel
+                    value="2" 
+                    control={<Radio />} 
+                    label="Axis"
+                  />
+                }
+
               </RadioGroup>
               <UpdateLevel onClick={updateLevel}>
                 {crafts !== undefined && (crafts[avatarIndex]?.tier !== 5 && <>
