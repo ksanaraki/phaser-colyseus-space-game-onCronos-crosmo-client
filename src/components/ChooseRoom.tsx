@@ -22,6 +22,28 @@ import { RoomMode } from 'interfaces/RoomMode';
 import { MapMode } from 'interfaces/MapMode';
 import PhaserGame from 'phaser/PhaserGame';
 import Boot from 'phaser/scenes/BootScene'
+import { setCurRoom } from 'stores/RoomStore';
+import store from 'stores';
+
+const getMaxTeamPlayerNumber = (mode: RoomMode): number => {
+  let res = 3;
+  switch (mode) {
+    case RoomMode.OvO:
+      res = 1;
+      break;
+    case RoomMode.DvD:
+      res = 2;
+      break;
+    case RoomMode.TvT:
+      res = 3;
+      break;
+  
+    default:
+      break;
+  }
+
+  return res;
+}
 
 const ChooseRoom = ({setShowMultiJoin, setIsViewMulti, playMultiplayer}) => {
   const [password, setPassword] = useState('');
@@ -33,7 +55,7 @@ const ChooseRoom = ({setShowMultiJoin, setIsViewMulti, playMultiplayer}) => {
   const availableRooms = useAppSelector((state) => state.room.availableRooms);
 
   useEffect(() => {
-    console.log(`availableRooms`, availableRooms);
+    
   }, [availableRooms]);
 
   const handleJoinClick = (roomId: string, password: string | null) => {
@@ -96,6 +118,7 @@ const ChooseRoom = ({setShowMultiJoin, setIsViewMulti, playMultiplayer}) => {
                     () => {
                       if(room?.maxClients > room?.clients) {
                         handleJoinClick(room?.roomId, null);
+                        store.dispatch(setCurRoom(getMaxTeamPlayerNumber(room?.metadata?.roomMode)));
                       }
                     }
                   }

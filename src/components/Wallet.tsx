@@ -62,6 +62,7 @@ const Wallet = (props) => {
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined);
   const playerList = useAppSelector((state) => state.room.playerList);
   const curPlayer = useAppSelector((state) => state.room.curPlayer);
+  const curRoom = useAppSelector((state) => state.room.curRoom);
   const navigate = useNavigate()
 
   const [noticeMsg, setNoticeMsg] = useState('')
@@ -77,18 +78,49 @@ const Wallet = (props) => {
   const [isPaid, setIsPaid] = useState<boolean>(false);
   const [playerTeam, setPlayerTeam] = useState<number>(0);
   const boot = PhaserGame.scene.keys.boot as Boot;
-  const multi = PhaserGame.scene.keys.multiplay as Multiplayer
+  const multi = PhaserGame.scene.keys.multiplay as Multiplayer;
 
+  const [axiable, setAxiable] = useState<boolean>(true);
+  const [alliedable, setAlliedable] = useState<boolean>(true);
 
   useEffect(() => {
     const init = async () => {
       await getAvatar();
-      console.log(`_playerId`, multi._myShip?._playerId);
-      console.log(`curPlayers`, playerList);
-      console.log(`cur`, curPlayer);
     }
+
     (isPlayEndless|| isMultiplayer) && init()
   }, [isPlayEndless, isMultiplayer])
+
+  useEffect(() => {
+    const me = playerList.find((p: any) => p?.id == curPlayer);
+    const oThers = playerList.filter((p: any) => p?.id != curPlayer);
+    let allied = oThers.filter((p: any) => p?.val?.team == 1).length;
+    let axis = oThers.filter((p: any) => p?.val?.team == 2).length;
+    console.log(`XXX`, me, oThers, allied, axis);
+    switch(me?.val?.team) {
+      case 1:
+        allied += 1;
+        break;
+
+      case 2:
+        axis += 1;
+        break;
+
+      default:
+        break;
+    }
+
+    if(curRoom >= allied) {
+      setAlliedable(false);
+    }
+
+    if(curRoom >= axis) {
+      setAxiable(false);
+    }
+
+    console.log(`curRoom`, curRoom, playerList, curPlayer);
+    
+  }, [playerList, curPlayer, curRoom])
 
   const getAvatar = async () => {
     setStep('fetching');
@@ -326,7 +358,7 @@ const Wallet = (props) => {
       <Wrapper>
         <AvatarWrapper>
           {(step === 'fetching') && <Box sx={{ display: 'block', textAlign: 'center' }}>
-            <SubTitle>Fetching NFT from your wallet ...</SubTitle>
+            <SubTitle>Fetching NFT from your wallet</SubTitle>
             <CircularProgress sx={{ mt: 2 }} />
           </Box>}
           {(step === 'fetched') && <Container>
@@ -401,7 +433,8 @@ const Wallet = (props) => {
                     value="1"
                     control={
                       <Radio />
-                    } 
+                    }
+                    disabled={!alliedable}
                     label="Allied" 
                   />
                 }
@@ -410,6 +443,7 @@ const Wallet = (props) => {
                   <FormControlLabel
                     value="2" 
                     control={<Radio />} 
+                    disabled={!axiable}
                     label="Axis"
                   />
                 }

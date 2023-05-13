@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RoomAvailable } from 'colyseus.js'
-import { RoomType } from './../types/Rooms'
+import { RoomType } from './../types/Rooms';
+
+import { RoomMode } from 'interfaces/RoomMode';
 
 interface RoomInterface extends RoomAvailable {
   name?: string
@@ -24,7 +26,8 @@ export const roomSlice = createSlice({
     // roomDescription: '',
     availableRooms: new Array<RoomAvailable>(),
     playerList: new Array(),
-    curPlayer: ``
+    curPlayer: ``,
+    curRoom: 0
   },
   reducers: {
     setLobbyJoined: (state, action: PayloadAction<boolean>) => {
@@ -32,6 +35,9 @@ export const roomSlice = createSlice({
     },
     setRoomJoined: (state, action: PayloadAction<boolean>) => {
       state.roomJoined = action.payload
+    },
+    setCurRoom: (state, action: PayloadAction<number>) => {
+      state.curRoom = action.payload
     },
     setCurPlayer: (state, action: PayloadAction<string>) => {
       state.curPlayer = action.payload
@@ -77,7 +83,8 @@ export const {
   addAvailableRooms,
   removeAvailableRooms,
   setPlayerList,
-  setCurPlayer
+  setCurPlayer,
+  setCurRoom
 } = roomSlice.actions
 
 export default roomSlice.reducer

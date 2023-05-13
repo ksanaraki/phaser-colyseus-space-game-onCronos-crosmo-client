@@ -13,7 +13,7 @@ const Setting = ({ setIsSetting, keyboard, setKeboard }) => {
     { key: 'fire', label: "Fire", keyboard: keyboard.fire },
     { key: 'special', label: "Special", keyboard: keyboard.special },
     { key: 'music', label: "Music ON/OFF", keyboard: keyboard.music },
-    { key: 'sounds', label: "Sounds Effects ON/OFF", keyboard: keyboard.sounds },
+    { key: 'sounds', label: "Sounds ON/OFF", keyboard: keyboard.sounds },
     { key: 'exit', label: "Exit", keyboard: keyboard.exit },
   ]
 

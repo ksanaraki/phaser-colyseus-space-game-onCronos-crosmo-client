@@ -64,7 +64,7 @@ class TextScene extends Phaser.Scene {
             else this._shotText.setText(data)
         } else if (key === "endLevel") {
             if (data === -1) this._endLevel.setText("")
-            else if (data === 0) this._endLevel.setText(`Enjoy Crosmo Shooter`)
+            else if (data === 0) this._endLevel.setText(`Enjoy The Game!`)
             else this._endLevel.setText(`Level ${data} completed`)
         } else if (key === "newEnemy") {
             if (data === -1) this._newEnemy.setText("")

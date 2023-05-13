@@ -115,7 +115,7 @@ export default class Network {
       // this.setDtServer2Client(content.serverTime)
     })
     // new instance added to the players MapSchema
-    console.log("this._room.state.players",this._room.state.players)
+    console.log("this._room.state.players",this._room)
     if (this._room.state.players)
     this._room.state.players.onAdd = (player: any, key: string) => {
       if (key === this._mySessionId) return

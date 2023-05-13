@@ -29,7 +29,7 @@ class GameOver extends Phaser.Scene {
     let title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, 'GAME OVER', Config.fontAssets.gameoverFontStyle)
     title.setOrigin(0.5)
 
-    Config.fontAssets.gameoverFontStyle.fontSize = '30px'
+    Config.fontAssets.gameoverFontStyle.fontSize = '24px'
 
     this._contentText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You did not get any score.', Config.fontAssets.gameoverFontStyle)
     this._contentText.setOrigin(0.5)

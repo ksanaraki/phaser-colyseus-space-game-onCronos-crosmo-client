@@ -11,16 +11,14 @@ import { JoystickMovement } from './Joystick'
 
 const Backdrop = styled.div`
   position: fixed;
-  bottom: 100px;
-  left: 32px;
-  max-height: 50%;
+  bottom: 32px;
+  left: 16px;
   max-width: 100%;
 `
 
 const Wrapper = styled.div`
   position: relative;
-  height: 100%;
-  padding: 16px;
+  padding: 0;
   display: flex;
   flex-direction: column;
 `
@@ -29,7 +27,7 @@ const JoystickWrapper = styled.div`
   margin-top: auto;
   align-self: flex-end;
 `
-export const minimumScreenWidthSize = 650 //px
+export const minimumScreenWidthSize = 1024 //px
 
 const useSmallScreen = (smallScreenSize: number) => {
   const [width, setWidth] = useState(window.innerWidth)
@@ -44,7 +42,7 @@ const useSmallScreen = (smallScreenSize: number) => {
 }
 
 export default function MobileVirtualJoystick({isMultiplayer}) {
-  const hasSmallScreen = true; //useSmallScreen(minimumScreenWidthSize)
+  const hasSmallScreen = useSmallScreen(minimumScreenWidthSize)
   const multiGame = PhaserGame.scene.keys.multiplay as Multiplayer;
   const singleGame = PhaserGame.scene.keys.play as Play;
 

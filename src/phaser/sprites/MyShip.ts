@@ -125,19 +125,7 @@ class MyShip extends Ship {
     if (this._hasLazer) this._lazerEffect.start()
     else this._lazerEffect.stop()
 
-    let joystickLeft = false;
-    let joystickRight = false;
-    let joystickUp = false;
-    let joystickDown = false;
-    let fireDown = false;
-    if (this.joystickMovement?.isMoving) {
-      joystickLeft = this.joystickMovement.direction.left;
-      joystickRight = this.joystickMovement.direction.right;
-      joystickUp = this.joystickMovement.direction.up;
-      joystickDown = this.joystickMovement.direction.down;
-    }
-
-    if (this._forwardKey.isDown || joystickUp) {
+    if (this._forwardKey.isDown) {
       this.setMaxVelocity(this._maxVelocity)
 
       // Ensure that the engine particle system is correctly set up
@@ -149,7 +137,7 @@ class MyShip extends Ship {
       //this._shipBody.velocity.rotate(this.rotation);
       
       this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
-      this.scene.physics.velocityFromRotation(this.rotation, this._acceleration, this._shipBody.acceleration)
+      this.scene.physics.velocityFromRotation(this.rotation, this._acceleration - 100, this._shipBody.acceleration)
 
     } else {
       this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
@@ -158,7 +146,7 @@ class MyShip extends Ship {
       // this.anims.stop()
     }
     
-    if (this._brakeKey.isDown || joystickDown) {
+    if (this._brakeKey.isDown ) {
       let maxVelocity = this._maxVelocity
       maxVelocity = maxVelocity / 3
       this.setMaxVelocity(maxVelocity)
@@ -166,43 +154,27 @@ class MyShip extends Ship {
 
     let angularVel = 0
     // Set angular velocity
-    if (this._leftKey.isDown || joystickLeft) {
-      if(joystickLeft) {
-        this.setMaxVelocity(this._maxVelocity)
-
-        // Ensure that the engine particle system is correctly set up
-        this._engine.setAngle(this.angleBack)
-        this._engine.setSpeed({ min: this.body.velocity.length() - 150, max: this.body.velocity.length() - 100 })
-        this._engine.followOffset.setToPolar(this.rotBack, 25)
-        this._engine.start()
-        // this.anims.play(Config.graphicAssets.lazerEffect.name, this._shipBody)
-        //this._shipBody.velocity.rotate(this.rotation);
-        
-        this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
-        this.scene.physics.velocityFromRotation(this.rotation, this._acceleration, this._shipBody.acceleration)
-      }
-
+    if (this._leftKey.isDown) {
       angularVel += -this._angularVelocity
-    } else if (this._rightKey.isDown || joystickRight) {
-      if(joystickRight) {
-        this.setMaxVelocity(this._maxVelocity)
-
-        // Ensure that the engine particle system is correctly set up
-        this._engine.setAngle(this.angleBack)
-        this._engine.setSpeed({ min: this.body.velocity.length() - 150, max: this.body.velocity.length() - 100 })
-        this._engine.followOffset.setToPolar(this.rotBack, 25)
-        this._engine.start()
-        // this.anims.play(Config.graphicAssets.lazerEffect.name, this._shipBody)
-        //this._shipBody.velocity.rotate(this.rotation);
-        
-        this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
-        this.scene.physics.velocityFromRotation(this.rotation, this._acceleration, this._shipBody.acceleration)
-      }
+    } else if (this._rightKey.isDown) {
       angularVel += this._angularVelocity
     }
-    this.setAngularVelocity(angularVel)
+    this.setAngularVelocity(angularVel);
 
-    if (this._fireKey.isDown || this.fireButtonHandle) {
+    if (this.joystickMovement?.isMoving) {
+      this.setAngle(this.joystickMovement.direction);
+
+      // Ensure that the engine particle system is correctly set up
+      this._engine.setAngle(this.angleBack)
+      this._engine.setSpeed({ min: this.body.velocity.length() - 150, max: this.body.velocity.length() - 100 })
+      this._engine.followOffset.setToPolar(this.rotBack, 25)
+      this._engine.start()
+      
+      this.scene.physics.velocityFromRotation(this.rotation, this._shipBody.velocity.length(), this._shipBody.velocity)
+      this.scene.physics.velocityFromRotation(this.rotation, this._acceleration, this._shipBody.acceleration)
+    }
+
+    if (this._fireKey.isDown ) {
       this._gunModule.setTriggerHeld(true)
     } else {
       this._gunModule.setTriggerHeld(false)

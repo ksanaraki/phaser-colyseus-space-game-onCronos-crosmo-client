@@ -44,7 +44,7 @@ const CreateRoom = ({setIsViewMulti, playMultiplayer}) => {
   const [showNotice, setShowNotice] = useState(false)
   const [severity, setSeverity] = useState('')
 
-  const [roomMode, setRoomMode] = useState<RoomMode>(RoomMode.Free);
+  const [roomMode, setRoomMode] = useState<RoomMode>(RoomMode.OvO);
   const [mapMode, setMapMode] = useState<MapMode>(MapMode.Blank);
   const [cost, setCost] = useState<number>(0);
   const [pwd, setPwd] = useState<string>(``);
@@ -104,10 +104,7 @@ const CreateRoom = ({setIsViewMulti, playMultiplayer}) => {
                         case 1: 
                           setMapMode(MapMode.Asteroid);
                           break;
-                        case 2: 
-                          setMapMode(MapMode.Bots);
-                          break;
-                        
+
                         default:
                           setMapMode(MapMode.Blank);
                           break;

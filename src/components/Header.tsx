@@ -26,7 +26,7 @@ const Header = ({ account, setWallet, setBg }) => {
         <Link to="/" onClick={() => setBg('bg_main')}>
           <img className='logo' src='assets/images/logo_yellow.png' alt="logo" />
         </Link>
-        <ButtonWallet onClick={connectWallet} >
+        <ButtonWallet onClick={connectWallet} className={`wallet-btn`}>
           {account ? filterAddress(account) : 'CONNECT YOUR WALLET'}
         </ButtonWallet>
       </Wrapper>

@@ -1,21 +1,63 @@
 import styled from 'styled-components'
 
 export const Wrapper = styled.div`
-  height: 100%;
   width: 100%;
   max-width: 1700px;
   margin: 0 auto;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    margin-top: 10%;
+  }
+
+  @media only screen and (max-width: 639px) {
+    max-width: 100%;
+  }
 }
 `
 
 export const AvatarWrapper = styled.div`
-  height: calc(100vh - 250px);
   width: 88%;
   max-width: 980px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    width: 92%;
+    max-width: 100%;
+  }
+  
+  @media only screen and (max-width: 639px) {
+    width: 92%;
+  }
+`
+
+export const SubTitle = styled.h3`
+  font-size: 25px;
+  color: white;
+  text-align: center;
+  font-weight: normal;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    p {
+      font-size: 24px;
+      color: #FFFFFF;
+    }
+    img {
+      width: 90%;
+    }
+  }
+
+  @media only screen and (max-width: 639px) {
+    p {
+      font-size: 24px;
+      color: #FFFFFF;
+    }
+    img {
+      width: 90%;
+    }
+  }
 `
 
 export const Container = styled.div`
@@ -23,13 +65,30 @@ export const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 100%;
-  min-height: 150px;
+  @media only screen and (max-width: 639px) {
+    display: block;
+  }
 `
 
 export const Left = styled.div`
   width: 70%;
-  max-width: 600px;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    width: 50%;
+  }
+  
+  @media only screen and (max-width: 639px) {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  @media only screen and (max-width: 560px) {
+    
+  }
+
+  @media only screen and (max-width: 480px) {
+    
+  }
 `
 
 export const Title = styled.div`
@@ -42,13 +101,28 @@ export const Title = styled.div`
   img {
     width: 450px;
   }
-`
+  
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    margin-bottom: 8px;
+    p {
+      font-size: 24px;
+      color: #FFFFFF;
+    }
+    img {
+      width: 78%;
+    }
+  }
 
-export const SubTitle = styled.h3`
-  font-size: 25px;
-  color: white;
-  text-align: center;
-  font-weight: normal;
+  @media only screen and (max-width: 639px) {
+    margin-bottom: 16px;
+    p {
+      font-size: 38px;
+      color: #FFFFFF;
+    }
+    img {
+      width: 90%;
+    }
+  }
 `
 
 export const Content = styled.div`
@@ -59,18 +133,42 @@ export const Content = styled.div`
 export const SwiperWrapper = styled.div`
   width: 425px;
   height: 460px;
-  max-height: 460px;
   background-size: contain;
   margin: 0 auto;
   display: flex;
 
   --swiper-navigation-size: 24px;
 
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    width: 226px;
+    height: 226px;
+  }
+
+  @media only screen and (max-width: 639px) {
+
+  }
+
+  @media only screen and (max-width: 480px) {
+    width: 264px;
+    height: 264px;
+    max-height: fit-content;
+  }
+
   .swiper-container {
     width: 425px;
     height: 440px;
     border-radius: 8px;
     overflow: hidden;
+
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      height: 226px;
+    }
+
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      height: 264px;
+    }
   }
 
   .swiper-container .swiper-button-next::after,
@@ -85,6 +183,17 @@ export const SwiperWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      height: 235px;
+      argin-top: 36px;
+    }
+
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      height: 264px;
+    }
   }
 
   .swiper-slide img.create-game {
@@ -104,6 +213,16 @@ export const SwiperWrapper = styled.div`
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
 
   .swiper-slide img.shield {
@@ -111,6 +230,16 @@ export const SwiperWrapper = styled.div`
     width: 400px;
     top: 0px;
     left: 12px;
+
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   
   .swiper-slide img.broken {
@@ -118,36 +247,91 @@ export const SwiperWrapper = styled.div`
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   .swiper-slide img.crosmonaut {
     position: absolute;
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   .swiper-slide img.background {
     position: absolute;
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   .swiper-slide img.on_background {
     position: absolute;
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+      top: -30px;
+    }
   }
   .swiper-slide img.booster {
     position: absolute;
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   .swiper-slide img.weapon {
     position: absolute;
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   
   .swiper-slide img.banner {
@@ -155,12 +339,29 @@ export const SwiperWrapper = styled.div`
     width: 400px;
     top: 0px;
     left: 12px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      top: -36px;
+      left: 0px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      left: 0px;
+    }
   }
   .swiper-slide img.tier {
     position: absolute;
     width: 80px;
     top: 20px;
     right: 33px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      top: 0px;
+      left: 0px;
+    }
   }
   
   .swiper-slide img.avatarBg {
@@ -169,6 +370,19 @@ export const SwiperWrapper = styled.div`
     left: 2px;
     width: 421px;
     height: 462px;
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      height: 226px;
+      top: -45px;
+      left: 1px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 264px;
+      height: 264px;
+      top: -26px;
+      left: 0;
+      height: calc(100% + 30px);
+    }
   }
 
   .swiper-slide p.name {
@@ -178,6 +392,20 @@ export const SwiperWrapper = styled.div`
     transform: translate(-50%, 0);
     font-size: 16px;
     color: var(--color-yellow);
+
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 226px;
+      width: 226px;
+      text-align: center;
+      top: -32px;
+    }
+
+    @media only screen and (max-width: 480px) {
+      top: -20px;
+      top: -16px;
+      width: 264px;
+      text-align: center;
+    }
   }
 
   .swiper-slide p.tier {
@@ -198,6 +426,17 @@ export const Arrow = styled.div`
     width: 50px;
     height: 55px;
     cursor: pointer;
+
+    @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+      width: 30px;
+      height: 30x;
+    }
+
+    @media only screen and (max-width: 480px) {
+      width: 32px;
+      height: 32px;
+      margin-top: 26px;
+    }
   }
 `
 
@@ -210,6 +449,19 @@ export const Right = styled.div`
   margin-top: 65px;
 
   color: var(--color-yellow);
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    width: 50%;
+    height: auto;
+    margin-top: 0;
+    justify-content: center;
+  }
+
+  @media only screen and (max-width: 480px) {
+    width: 100%;
+    height: auto;
+    margin-top: 32px;
+  }
 `
 
 export const Reward = styled.div`
@@ -217,6 +469,16 @@ export const Reward = styled.div`
   text-align: center;
   span {
     padding-top: 4px;
+  }
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  @media only screen and (max-width: 639px) {
+    margin-bottom: 8px;
+    font-size: 18px;
   }
 `
 
@@ -230,6 +492,16 @@ export const UpdateLevel = styled.div`
   background: rgba(40,13,95,1);
   color: white;
   cursor: pointer;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  @media only screen and (max-width: 639px) {
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
 `
 
 export const Join = styled.div`
@@ -244,6 +516,20 @@ export const Join = styled.div`
   align-items: center;
   color: white;
   cursor: pointer;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    width: 102px;
+    height: 38px;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+
+  @media only screen and (max-width: 639px) {
+    width: 102px;
+    height: 38px;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
 `
 
 export const ModeWrapper = styled.div`
@@ -262,6 +548,16 @@ export const ModeWrapper = styled.div`
   img.room.selected {
     opacity: 1 !important
   }
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+
+  @media only screen and (max-width: 639px) {
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
 `
 
 export const GameMode = styled.div`
@@ -277,4 +573,12 @@ export const GameMode = styled.div`
   background-image: ${props => props.bgColor};
   color: white;
   cursor: pointer;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    margin-bottom: 8px;
+  }
+
+  @media only screen and (max-width: 639px) {
+    margin-bottom: 8px;
+  }
 `

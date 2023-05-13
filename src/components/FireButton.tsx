@@ -9,11 +9,13 @@ import Play from 'phaser/scenes/PlayScene';
 import { useAppSelector } from '../hooks'
 import { JoystickMovement } from './Joystick'
 
+import store from 'stores';
+import { setShieldName, setShieldDuration, setHasAtomic, setIsExist, setBulletName, setBulletDuration } from 'stores/PhaserStore';
+
 const FireButtonWrapper = styled.div`
   position: fixed;
-  bottom: 100px;
-  right: 96px;
-  bottom: 64px;
+  bottom: 60px;
+  right: 20px;
 `
 
 const FireButtonObj = styled.img`
@@ -22,7 +24,7 @@ const FireButtonObj = styled.img`
   height: 46px;
 `
 
-export const minimumScreenWidthSize = 650 //px
+export const minimumScreenWidthSize = 1024 //px
 
 const useSmallScreen = (smallScreenSize: number) => {
   const [width, setWidth] = useState(window.innerWidth)
@@ -37,21 +39,21 @@ const useSmallScreen = (smallScreenSize: number) => {
 }
 
 export default function FireButton({isMultiplayer}) {
-  const hasSmallScreen = true; //useSmallScreen(minimumScreenWidthSize)
+  const hasSmallScreen = useSmallScreen(minimumScreenWidthSize)
   const multiGame = PhaserGame.scene.keys.multiplay as Multiplayer;
   const singleGame = PhaserGame.scene.keys.play as Play;
 
-  const handleFire = (fired: boolean) => {
-    if (isMultiplayer) multiGame._myShip?.handleFire(fired)
-    else singleGame._myShip?.handleFire(fired)
+  const handleFire = () => {
+    if (isMultiplayer) multiGame._myShip?._gunModule.setTriggerHeld(true)
+    else singleGame._myShip?._gunModule.setTriggerHeld(true)
   }
 
   return (
     <>
     {hasSmallScreen && (
       <FireButtonWrapper
-        onTouchStart={() => handleFire(true)}
-        onTouchCancel={() => handleFire(false)}
+        onTouchStart={() => handleFire()}
+        onTouchCancel={() => handleFire()}
       >
         <FireButtonObj src="assets/images/icon_DOUBLE_BULLET.png" alt="Fire Button">
         </FireButtonObj>

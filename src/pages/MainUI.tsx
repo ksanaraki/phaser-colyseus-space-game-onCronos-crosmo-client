@@ -53,6 +53,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   const canPlayAgain = useAppSelector((state) => (state.user.canPlayAgain))
   const joinLobbyRoom=useAppSelector((state) => (state.user.joinLobbyRoom))
   const tokenId = useAppSelector((state) => (state.user.tokenId))
+  const hasAtomic = useAppSelector((state) => (state.phaser.hasAtomic))
 
   const [craftInstance, setCraftInstance] = useState(null)
   const [shooterInstance, setShooterInstance] = useState(null)
@@ -327,9 +328,9 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         </ShooterWrapper>
   } else ui = <>
                 <GameUI specialKey={keyboard.special} />
-                {/* <MobileVirtualJoystick isMultiplayer={isMultiplayer}/>
+                <MobileVirtualJoystick isMultiplayer={isMultiplayer}/>
                 <FireButton isMultiplayer={isMultiplayer}/>
-                <AtomicButton isMultiplayer={isMultiplayer}/> */}
+                {hasAtomic && <AtomicButton isMultiplayer={isMultiplayer}/>}
               </>
 
   return (<Wrapper isPlayEndless={isPlayEndless} isMultiplayer={ isMultiplayer}>
@@ -361,7 +362,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
     {calculating && <Box sx={{
       position: 'fixed',
       width: '100%',
-      height: '100%',
       background: 'rgba(0, 0, 0, .5)',
       top: 0,
       left: 0,

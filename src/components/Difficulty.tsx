@@ -14,7 +14,7 @@ const Difficulty = ({ setIsDifficulty, difficulty, setDifficulty }) => {
       <ModalWrapper>
         <Content>
           <Title>
-            CHOOSE YOUR DIFFICULTY
+            CHOOSE DIFFICULTY
           </Title>
           <Buttons>
             <img className='difficulty' onClick={() => setDifficulty('easy')}

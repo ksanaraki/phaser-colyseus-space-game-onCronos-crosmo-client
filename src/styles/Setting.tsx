@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   height: 100vh;
   top: 0;
   background: #00000066;
+  z-index: 9;
 `
 
 export const ModalWrapper = styled.div`
@@ -33,6 +34,47 @@ export const ModalWrapper = styled.div`
     width: 50px;
     cursor: pointer;
   }
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    width: 560px;
+    height: 316px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    img.close {
+      top: 0px;
+      right: 0px;
+      width: 36px;
+    }
+  }
+  
+  @media only screen and (max-width: 960px) and (orientation:landscape)  {
+      
+  }
+  
+  @media only screen and (max-width: 860px) and (orientation:landscape)  {
+      
+  }
+  
+  @media only screen and (max-width: 768px) and (orientation:landscape)  {
+      
+  }
+
+  @media only screen and (max-width: 639px) {
+    width: 90%;
+    height: 70%;
+    max-width: 100%;
+    max-height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    img.close {
+      top: 0px;
+      right: 0px;
+      width: 36px;
+    }
+  }
 `
 
 export const SettingWrapper = styled.div`
@@ -42,6 +84,28 @@ export const SettingWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape)  {
+    margin-top: 0px;
+  }
+  
+  @media only screen and (max-width: 960px) and (orientation:landscape)  {
+      
+  }
+  
+  @media only screen and (max-width: 860px) and (orientation:landscape)  {
+      
+  }
+  
+  @media only screen and (max-width: 768px) and (orientation:landscape)  {
+      
+  }
+
+  @media only screen and (max-width: 639px) {
+    width: 90%;
+    height: 70%;
+    margin-top: 0;
+  }
 `
 
 export const SettingRow = styled.div`
@@ -49,7 +113,7 @@ export const SettingRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 10%;
   background: ${props => props.selected ? '#0b171a' : '#12262c'};
   border: 2px solid #234955;
   border-radius: 10px;

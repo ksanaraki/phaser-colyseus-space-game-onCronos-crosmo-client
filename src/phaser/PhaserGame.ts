@@ -24,8 +24,8 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     parent: 'phaser-example',
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 1600,
-    height: 900
+    width: window.innerWidth * window.devicePixelRatio,
+    height: window.innerHeight * window.devicePixelRatio
 },
   physics: {
     default: 'arcade',

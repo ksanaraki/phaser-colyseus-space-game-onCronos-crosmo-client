@@ -9,10 +9,13 @@ import Play from 'phaser/scenes/PlayScene';
 import { useAppSelector } from '../hooks'
 import { JoystickMovement } from './Joystick'
 
+import store from 'stores';
+import { setShieldName, setShieldDuration, setHasAtomic, setIsExist, setBulletName, setBulletDuration } from 'stores/PhaserStore';
+
 const FireButtonWrapper = styled.div`
   position: fixed;
-  bottom: 100px;
-  right: 32px;
+  right: 96px;
+  bottom: 60px;
 `
 
 const FireButtonObj = styled.img`;
@@ -21,7 +24,7 @@ const FireButtonObj = styled.img`;
   border-radius: 50%;
 `
 
-export const minimumScreenWidthSize = 650 //px
+export const minimumScreenWidthSize = 1024 //px
 
 const useSmallScreen = (smallScreenSize: number) => {
   const [width, setWidth] = useState(window.innerWidth)
@@ -36,21 +39,33 @@ const useSmallScreen = (smallScreenSize: number) => {
 }
 
 export default function AtomicButton({isMultiplayer}) {
-  const hasSmallScreen = true; //useSmallScreen(minimumScreenWidthSize)
+  const hasSmallScreen = useSmallScreen(minimumScreenWidthSize)
   const multiGame = PhaserGame.scene.keys.multiplay as Multiplayer;
   const singleGame = PhaserGame.scene.keys.play as Play;
 
-  const handleExplode = (fired: boolean) => {
-    if (isMultiplayer) multiGame._myShip?.handleFire(fired)
-    else singleGame._myShip?.handleFire(fired)
+  const handleExplode = () => {
+    if (isMultiplayer) {
+      if(multiGame._myShip._hasAtomic) {
+				multiGame._network.specialKeyIsDown(true);
+				multiGame._myShip._hasAtomic = false;
+        store.dispatch(setHasAtomic(false));
+      }
+    }
+    else {
+      if(singleGame._myShip._hasAtomic) {
+        singleGame.spawnRegionBullet(singleGame._center.x, singleGame._center.y, singleGame, 'atomic')
+        singleGame._myShip._hasAtomic = false;
+        store.dispatch(setHasAtomic(false));
+      }
+    }
   }
 
   return (
     <>
     {hasSmallScreen && (
       <FireButtonWrapper 
-        onTouchStart={() => handleExplode(true)}
-        onTouchEnd={() => handleExplode(false)}
+        onTouchStart={() => handleExplode()}
+        onTouchEnd={() => handleExplode()}
       >
         <FireButtonObj src="assets/images/icon_ATOMIC_BULLET.png" alt="Fire Button">
         </FireButtonObj>

@@ -7,6 +7,7 @@ import { withStyles } from '@mui/styles';
 
 import { useAppSelector } from '../hooks'
 import { BULLET_TYPE } from './../types/config/helper';
+import { CircularProgress } from '@mui/material';
 
 const BulletLinearProgress = withStyles(() => {
   return {
@@ -56,10 +57,13 @@ const GameUI = ({ specialKey }) => {
   const shieldChanged = useAppSelector((state) => state.phaser.shieldChanged)
   const hasAtomic = useAppSelector((state) => (state.phaser.hasAtomic))
 
+  const playerList = useAppSelector((state) => state.room.playerList);
+
   let bulletCount = bulletDuration - 0.15
   let shieldCount = shieldDuration - 0.15
 
   useEffect(() => {
+
     const timer = setInterval(() => {
       const bulletPercentVal = bulletCount / bulletDuration * 100
       setBulletPercent(bulletPercentVal);
@@ -91,63 +95,15 @@ const GameUI = ({ specialKey }) => {
 
   return (
     <>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        height: 70,
-        mr: '10px',
-      }}>
-        {shieldPercent !== 0 && <Box sx={{
-          textAlign: 'right',
-          mt: '60px'
+        {shieldPercent !== 0 && <CircularProgress color="success" variant="determinate" value={shieldPercent} size={64} sx={{position: `absolute`, right: 16, top: bulletPercent !== 0 ? `40%` : `50%`}}/>}
+        {bulletPercent !== 0 && <CircularProgress variant="determinate" value={bulletPercent} size={64} sx={{position: `absolute`, right: 16, top: shieldPercent !== 0 ? `60%` : `50%`}}/>}
+        {hasAtomic && <Typography sx={{
+          color: 'white',
+          position: 'absolute',
+          bottom: '65px',
+          right: '20px',
+          fontSize: '20px'
         }}>
-          <Box sx={{
-            width: 210,
-            transform: 'rotate(180deg)',
-          }}>
-            <ShieldLinearProgress variant="determinate" value={shieldPercent} />
-          </Box>
-          <Typography sx={{
-            fontSize: '20px',
-            color: '#24c2bc'
-          }}>
-            SHIELD
-          </Typography>
-        </Box>}
-      </Box>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'flex-end'
-      }}>
-        <Box sx={{
-          width: 'calc(100vh - 220px)',
-          transform: 'translate(42%, 20px)'
-        }}>
-          <Box sx={{
-            width: "100%",
-            transform: 'rotate(-90deg) translateX(-50%)',
-            flexDirection: 'row-reverse',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
-            {bulletPercent !== 0 && <>
-              <BulletLinearProgress variant="determinate" value={bulletPercent} />
-              <Box sx={{
-                transform: 'rotate(90deg)'
-              }}>
-                <img src={`assets/images/icon_${bulletName}.png`} alt="airdrop icon" />
-              </Box>
-            </>}
-          </Box>
-        </Box >
-      </Box>
-      {hasAtomic && <Typography sx={{
-        color: 'white',
-        position: 'absolute',
-        bottom: '65px',
-        right: '20px',
-        fontSize: '20px'
-      }}>
         Press "{specialKey}" to use atomic bomb
       </Typography>}
     </>
