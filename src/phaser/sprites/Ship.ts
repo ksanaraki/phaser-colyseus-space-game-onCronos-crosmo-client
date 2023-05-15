@@ -24,6 +24,7 @@ class Ship extends Entity {
   _hasShield: boolean
   _bulletType: string
   _bulletTypeTimer: any
+  _team: number
 
   constructor(sargs: any, id: string, shipPros: any, hasCombat: boolean) {
     super(sargs)
@@ -40,7 +41,8 @@ class Ship extends Entity {
     this._shield.setVisible(false)
     this._hasShield = false
     this._bulletType = BULLET_TYPE.NORMAL_BULLET
-
+    this._team = shipPros?.team;
+    
     let owner = this
     let maxBullets = Config.bulletPros.NORMAL_BULLET.maxBullets + BONUS_MAXBULLET[this._tier] + (hasCombat ? 1 : 0)
     let fireCooldown = Config.bulletPros.NORMAL_BULLET.fireCooldown * BONUS_FIRECOOLDOWN[this._tier] * (hasCombat ? 0.9 : 1)

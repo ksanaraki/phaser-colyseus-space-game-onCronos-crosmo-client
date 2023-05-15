@@ -32,6 +32,8 @@ import Airdrop from '../sprites/Airdrop'
 import Enemy from '../sprites/Enemy'
 import EnemyBullet from '../sprites/EnemyBullet'
 import { Event, phaserEvents } from '../../events/EventCenter'
+
+import { Client, Room } from 'colyseus.js'
 //#endregion
 
 // This is where all the multiplay game code goes.
@@ -41,7 +43,7 @@ class MultiplayerScene extends Phaser.Scene {
 		super('multiplay')
 		
 	}
-
+	private _room?: Room<any>
 	//#region local variables
 	_network!: Network
 	_myShip: any
@@ -123,6 +125,7 @@ class MultiplayerScene extends Phaser.Scene {
 	_shipPros: any
 	_joyStick:any
 
+	_shipCount: number
 	preLoad() {
 		// this.load.on('progress', function (progress) {
 		// 	// progress is a value between 0 and 1
@@ -172,6 +175,8 @@ class MultiplayerScene extends Phaser.Scene {
 
 		this._shot = false;
 		this._gameStarted = false;
+
+		this._shipCount = 0;
 	}
 
 	initWorld() {
@@ -253,7 +258,8 @@ class MultiplayerScene extends Phaser.Scene {
 				group: this._ships,
 				x: this.cameras.main.centerX,
 				y: this.cameras.main.centerY,
-				texture: shipPros.spaceship
+				texture: shipPros.spaceship,
+				team:this._team
 			},
 			id: 1,
 			shipPros: shipPros,
@@ -268,6 +274,7 @@ class MultiplayerScene extends Phaser.Scene {
 				this.gameOver()
 			} else {
 				this._myShip.respawn(this._width / 2, this._height / 2)
+				this._myShip.respawn(this._width / 2 +1, this._height / 2 +1)
 			}
 		})
 
@@ -469,27 +476,24 @@ class MultiplayerScene extends Phaser.Scene {
 	//#region multiplayer
 	
 	// function to add new player to the otherPlayers group
-	private handlePlayerJoined(newShip: any, id: string) {
-		//game Start when other player come in.
-		this.input.keyboard.enabled = true;		
-		// this._waitingText.destroy();
-		if (this._network) this._network.allPlayersReady(true)
+	private handlePlayerJoined(newShip: any, id: string, maxClients: number) {
 
-		this._gameStarted = true;
 		const otherPlayer = new OtherShip({
 			sargs: {
 				scene: this,
 				group: this._otherShips,
 				x: newShip.x,
 				y: newShip.y,
-				texture: Config.graphicAssets.shipsTypes[0]
+				texture: Config.graphicAssets.shipsTypes[0],
 			},
+			team: newShip._team,
 			id: 1,
 			shipPros: this._shipPros,
 			tier:0
 		})
 		//update text scene here
 		this.scene.launch("text", { level: "Multiplayer" })
+		console.log("otherPlayer", otherPlayer);
 		this._otherShips.add(otherPlayer)
 		this._otherShipMap.set(id, otherPlayer)
 
@@ -511,6 +515,18 @@ class MultiplayerScene extends Phaser.Scene {
 		otherPlayer._engineSound = this.sound.add(Config.soundAssets.engine.name, { loop: true, volume: 0.5 })
 		if (otherPlayer._isEnableSoundEffect) otherPlayer._engineSound.play()
 		otherPlayer._engineSound.pause()
+
+		//this._shipCount++;
+		//this._room = this._network.getRoomData().b;
+		if (this._otherShips.getLength() < maxClients - 1)
+			return;
+		//game Start when other player come in.
+		this.input.keyboard.enabled = true;		
+		// this._waitingText.destroy();
+		console.log("handlePlayerJoined", newShip);
+		if (this._network) this._network.allPlayersReady(true)
+
+		this._gameStarted = true;
 
 	}
 
@@ -559,7 +575,7 @@ class MultiplayerScene extends Phaser.Scene {
 
         let speed = Math.sqrt(newBullet.speed_x * newBullet.speed_x + newBullet.speed_y * newBullet.speed_y)
         if (newBullet.owner != this._myShip)
-		    this.spawnRandomBullet(newBullet.x, newBullet.y, newBullet.rotation, speed , newBullet.owner, false)
+		    this.spawnRandomBullet(newBullet.x, newBullet.y, newBullet.rotation, speed , newBullet.owner, false,newBullet.teamflag)
 		//this._bulletsMap.set(id, _bullet)
 		}
 	}
@@ -624,6 +640,14 @@ class MultiplayerScene extends Phaser.Scene {
 	}
 	private handleAsteroidChangesUpdated(changes: any, id: string) {
 		const asteroid = this._asteroidsMap.get(id)
+		if(!this._asteroidsMap.has(id))
+		{
+			console.log("this._network._asteroidsMap", this._network._asteroidsMap);
+			const netAsteroid = this._network._asteroidsMap.get(id);
+			if (this._network._asteroidsMap.has(id)) 
+				this.handleAsteroidCreated(netAsteroid, id, id)
+		}
+			
 		 asteroid?.updateServerDataChangesAsteroid(changes,this._network._dtServer2Client)
 	}
 	//airdrop part
@@ -821,9 +845,7 @@ class MultiplayerScene extends Phaser.Scene {
 	}
 
     shipBulletCollision(bullet: any, ship: any) {
-    console.log("shipBulletCollision  bullet", bullet, "ship", ship)
-    console.log("bullet.owner", bullet._owner, "this._myShip", this._myShip)
-		if (bullet._owner != ship){
+		if (bullet._owner != ship && bullet._owner._team != ship._team ){
 				if (ship._hasShield) {
 					if (this._isEnableSoundEffect) this._destroyedSound.play()
 					this._particles.bulletImpact.emitParticleAt(ship.x, ship.y)
@@ -888,7 +910,7 @@ class MultiplayerScene extends Phaser.Scene {
 		
 	}
 	//#region spawn
-	updateBulletLaunchDataToserver(x: number, y: number, rotation: number, speed: number, shooter: any) {
+	updateBulletLaunchDataToserver(x: number, y: number, rotation: number, speed: number, shooter: any,teamflag:number) {
 		let speed_x = 0;
 		let speed_y = 0;
 		let baseVel = shooter.body.velocity
@@ -904,13 +926,14 @@ class MultiplayerScene extends Phaser.Scene {
 					rotation,
 					speed_x,
 					speed_y,
-					shooter._bulletType
+					shooter._bulletType,
+					shooter._team
 			 	)
 			this._shot = true;
 		}
 		this._shot = false;
 	}
-	spawnRandomBullet(x: number, y: number, rotation: number, speed: number, shooter: any, own: boolean) {
+	spawnRandomBullet(x: number, y: number, rotation: number, speed: number, shooter: any, own: boolean,teamflag:number) {
 		const bulletType = shooter._bulletType
 		if (own)
 		{
@@ -933,7 +956,7 @@ class MultiplayerScene extends Phaser.Scene {
 				let newD = { x: velocityD.x / len, y: velocityD.y / len }
 
 				for (let i = -1; i <= 1; i += 2) {
-					let bulletD = this.spawnBullet(x - newD.y * 15 * i, y + newD.x * 15 * i, shooter)
+					let bulletD = this.spawnBullet(x - newD.y * 15 * i, y + newD.x * 15 * i, shooter,teamflag)
 					bulletD.rotation = shooter.rotation
 					bulletD.setVelocity(velocityD.x, velocityD.y)
 				}
@@ -947,7 +970,7 @@ class MultiplayerScene extends Phaser.Scene {
 				let newT = { x: velocityT.x / lenT, y: velocityT.y / lenT }
 
 				for (let i = -1; i <= 1; i++) {
-					let bulletD = this.spawnBullet(x - newT.y * 15 * i, y + newT.x * 15 * i, shooter)
+					let bulletD = this.spawnBullet(x - newT.y * 15 * i, y + newT.x * 15 * i, shooter,teamflag)
 					bulletD.rotation = shooter.rotation
 					bulletD.setVelocity(velocityT.x, velocityT.y)
 				}
@@ -956,7 +979,7 @@ class MultiplayerScene extends Phaser.Scene {
 			case BULLET_TYPE.VOLLEY_BULLET:
 				for (let i = -1; i <= 1; i++) {
 					let q = i * Math.PI / 10
-					let bullet1 = this.spawnBullet(x, y, shooter)
+					let bullet1 = this.spawnBullet(x, y, shooter,teamflag)
 					bullet1.rotation = shooter.rotation + q
 					let baseVel1 = shooter.body.velocity
 					let vel1 = new Phaser.Math.Vector2().setToPolar(rotation, speed)
@@ -968,7 +991,7 @@ class MultiplayerScene extends Phaser.Scene {
 				break
 
 			case BULLET_TYPE.EXPLOSIVE_BULLET:
-				let bullet3 = this.spawnBullet(x, y, shooter)
+				let bullet3 = this.spawnBullet(x, y, shooter,teamflag)
 				bullet3.rotation = shooter.rotation
 				let baseVel3 = shooter.body.velocity
 				let vel3 = new Phaser.Math.Vector2().setToPolar(rotation, speed)
@@ -978,7 +1001,7 @@ class MultiplayerScene extends Phaser.Scene {
 			case BULLET_TYPE.LAZER_BULLET:
 				shooter._hasLazer = true
 				setTimeout(() => {
-					let bullet4 = this.spawnBullet(x, y, shooter)
+					let bullet4 = this.spawnBullet(x, y, shooter,teamflag)
 					bullet4.rotation = shooter.rotation
 					let baseVel4 = shooter.body.velocity
 					let vel4 = new Phaser.Math.Vector2().setToPolar(shooter.rotation, speed)
@@ -988,7 +1011,7 @@ class MultiplayerScene extends Phaser.Scene {
 				break
 
 			case BULLET_TYPE.ATOMIC_BULLET:
-				let bullet5 = this.spawnBullet(x, y, shooter)
+				let bullet5 = this.spawnBullet(x, y, shooter,teamflag)
 				bullet5.rotation = shooter.rotation
 				let baseVel5 = shooter.body.velocity
 				let vel5 = new Phaser.Math.Vector2().setToPolar(rotation, speed)
@@ -996,7 +1019,7 @@ class MultiplayerScene extends Phaser.Scene {
 				break
 
 			default:
-				let bullet = this.spawnBullet(x, y, shooter)
+				let bullet = this.spawnBullet(x, y, shooter,teamflag)
 				console.log("shooter.body.velocity", own, "   ",shooter.body.velocity)
 				bullet.rotation = shooter.rotation
 				let baseVel = shooter.body.velocity
@@ -1006,8 +1029,7 @@ class MultiplayerScene extends Phaser.Scene {
 		}
 	}
 
-	spawnBullet(x: number, y: number, shooter: any) {
-	    console.log("spawnBullet")
+	spawnBullet(x: number, y: number, shooter: any,teamflag:any) {
 		let posX: number
 		let posY: number
 		let bulletType = shooter._bulletType
@@ -1024,7 +1046,8 @@ class MultiplayerScene extends Phaser.Scene {
 				group: this._bullets,
 				x: posX, y: posY,
 				texture: BULLET_NAME[shooter._bulletType],
-				frame: 0
+				frame: 0,
+				teamflag:teamflag
 			},
 			owner: shooter,
 			kind: 'normal'
@@ -1050,7 +1073,7 @@ class MultiplayerScene extends Phaser.Scene {
 	spawnRandomAsteroid(type: string, size: string) {
 		let { x, y, dir: direction } = this.getOuterRimCoords()
 		let asteroid = this.spawnAsteroid(x, y, type, size)
-		asteroid.launchAsteroid(randRange(this._minAsteroidSpeed, this._maxAsteroidSpeed), direction + Math.PI, QUARTRAD)
+		//asteroid.launchAsteroid(randRange(this._minAsteroidSpeed, this._maxAsteroidSpeed), direction + Math.PI, QUARTRAD)
 	}
 
 	spawnAsteroid(x: number, y: number, type: string, size: string) {
@@ -1090,7 +1113,7 @@ class MultiplayerScene extends Phaser.Scene {
 			let asteroid = this.spawnAsteroid(x + rx, y + ry, type, newSize)
 
 			// Launch with velocity that is slightly faster and somewhat in the same direction
-			asteroid.launchAsteroid(randRange(this._minAsteroidSpeed, this._maxAsteroidSpeed), originalVel.angle(), QUARTRAD, 60)
+			//asteroid.launchAsteroid(randRange(this._minAsteroidSpeed, this._maxAsteroidSpeed), originalVel.angle(), QUARTRAD, 60)
 		}
 	}
 

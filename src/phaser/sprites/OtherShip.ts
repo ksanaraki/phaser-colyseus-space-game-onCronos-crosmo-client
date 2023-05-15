@@ -19,8 +19,9 @@ class OtherShip extends Ship {
 
   _shipId:  number
   _timetemp = 0;
-  constructor({ sargs, id, shipPros, tier }) {
+  constructor({ sargs, team, id, shipPros, tier }) {
     super(sargs, id, tier, false)
+    this._team = team;
     this._shipId = id;
     this._targetPosition = { x: sargs.x, y: sargs.y }
     this._shipBody = this.body;
@@ -98,7 +99,13 @@ class OtherShip extends Ship {
           this._readyToConnect = value
         }
         break
-      
+
+      case 'team':
+          if (typeof value === 'number') {
+            this._team = value
+          }
+          break
+          
         case 'lives':
           if (typeof value === 'number') {
             this._lives = value
@@ -113,6 +120,7 @@ class OtherShip extends Ship {
     if (serverTime < this._timetemp) return;
     const dt = (curTime - serverTime-deltaTimeFromServer)/1000.0;
     changes.map((change: { field: string; value: string | number | boolean }) => {
+      //console.log("changes", change.field, change.value,);
       this.updateOtherPlayer(change.field, change.value, dt)
     })
     this._timetemp = serverTime;
@@ -194,7 +202,7 @@ class OtherShip extends Ship {
     this.setRotation(this.rotLeft)
     this.setPosition(x, y)
     this._shipBody.setVelocity(0)
-    this.makeTempInvulnerable(3)
+    //this.makeTempInvulnerable(3)
   }
 }
 

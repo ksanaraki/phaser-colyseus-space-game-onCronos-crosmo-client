@@ -63,7 +63,6 @@ const GameUI = ({ specialKey }) => {
   let shieldCount = shieldDuration - 0.15
 
   useEffect(() => {
-
     const timer = setInterval(() => {
       const bulletPercentVal = bulletCount / bulletDuration * 100
       setBulletPercent(bulletPercentVal);

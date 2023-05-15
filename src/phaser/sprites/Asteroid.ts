@@ -27,13 +27,13 @@ class Asteroid extends Entity {
   launchAsteroid(speed, direction, dirRandom = 0, angVelRange = 50) {
     let dirx = randRange(direction - dirRandom, direction + dirRandom)
     let diry = randRange(direction - dirRandom, direction + dirRandom)
-    let vx = speed * Math.cos(dirx)
-    let vy = speed * Math.sin(diry)
+    let vx = speed * Math.cos(direction)
+    let vy = speed * Math.sin(direction)
     this.setOrigin(0.5, 0.5)
     if (this._size === ASTEROID_SIZE.LARGE) this.setCircle(29)
     if (this._size === ASTEROID_SIZE.SMALL) this.setCircle(19)
-    this.setVelocity(vx, vy)
-    this.setAngularVelocity(randRange(-angVelRange, angVelRange))
+    //this.setVelocity(vx, vy)
+    //this.setAngularVelocity(randRange(-angVelRange, angVelRange))
   }
 
   updateServerDataAsteroid(field: string, value: number | string | boolean, deltaTime: number) {
@@ -42,7 +42,7 @@ class Asteroid extends Entity {
 				if (typeof value === 'number') {
 				if (deltaTime > 1 || deltaTime <-1)
 				    break;
-				if ((value - this.x) > 40 || (value - this.x) < -40)
+				//if ((value - this.x) > 40 || (value - this.x) < -40)
                     this.x = value;// + this.body.velocity.x * deltaTime;
 				}
 				break
@@ -50,7 +50,7 @@ class Asteroid extends Entity {
 				if (typeof value === 'number') {
 				if (deltaTime > 1 || deltaTime <-1)
 				    break;
-				if ((value - this.y) > 40 || (value - this.y) < -40)
+				//if ((value - this.y) > 40 || (value - this.y) < -40)
                     this.y = value;// + this.body.velocity.y * deltaTime;
                 }
                 break

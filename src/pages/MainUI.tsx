@@ -291,7 +291,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         <img src="assets/images/title.png" alt="title" />
       </Title>
       <Buttons>
-        {/* <img className="playmulti" src="assets/images/quick.png" alt="play endless" onClick={() => quickMulti()} /> */}
         <img className="playmulti" src="assets/images/join.png" alt="play endless" onClick={() => joinMulti()} />
         <img className="playmulti" src="assets/images/create.png" alt="play endless" onClick={() => createMulti()} />
       </Buttons>

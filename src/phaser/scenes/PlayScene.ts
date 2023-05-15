@@ -377,7 +377,7 @@ class PlayScene extends Phaser.Scene {
 		});
 	}
 
-	updateBulletLaunchDataToserver(x: number, y: number, rotation: number, speed: number, shooter: any) {
+	updateBulletLaunchDataToserver(x: number, y: number, rotation: number, speed: number, shooter: any,teamflag:number) {
 		let speed_x = 0;
 		let speed_y = 0;
 		let baseVel = shooter.body.velocity
@@ -393,7 +393,8 @@ class PlayScene extends Phaser.Scene {
 					rotation,
 					speed_x,
 					speed_y,
-					shooter._bulletType
+					shooter._bulletType,
+					teamflag
 			 	)
 			this._shot = true;
 		}

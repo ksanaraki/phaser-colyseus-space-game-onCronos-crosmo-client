@@ -17,11 +17,15 @@ import {
 import CONFIG from './../types/config/config';
 import api from './../api';
 
+import Asteroid from '../phaser/sprites/Asteroid'
+
 export default class Network {
 
   private _client: Client
   private _room?: Room<any>
   private _lobby!: Room
+
+  _asteroidsMap = new Map<string, Asteroid>()
 
   _mySessionId!: string
   _dtServer2Client:number
@@ -83,7 +87,19 @@ export default class Network {
       roomMode,
       mapMode,
       cost
-    })
+    });
+
+    try {
+      this._room.maxClients = 2;
+      if (roomMode === "2X2")
+        this._room.maxClients = 4;
+      else if (roomMode === "3X3")
+        this._room.maxClients = 6;
+    }
+    catch(e){
+      console.log(`err in maxCLients`, e)
+    }
+
     this.initialize()
   }
 
@@ -108,6 +124,11 @@ export default class Network {
       //getting dt from server
       // this.setDtServer2Client(content.serverTime)
     })
+
+    this._room.onMessage(Message.SEND_OTHER_DATA, (content) => {
+      phaserEvents.emit(Event.PLAYER_JOINED, content.player, content.id, content.maxClients)
+    })
+    
     this._room.onMessage(Message.GET_PLAYERS, (content) => {
       store.dispatch(setPlayerList(Object.entries(content?.players).map(([key, val]) => ({id: key, val}))));
       console.log(`content`, Object.entries(content?.players).map(([key, val]) => ({id: key, val})))
@@ -115,7 +136,6 @@ export default class Network {
       // this.setDtServer2Client(content.serverTime)
     })
     // new instance added to the players MapSchema
-    console.log("this._room.state.players",this._room)
     if (this._room.state.players)
     this._room.state.players.onAdd = (player: any, key: string) => {
       if (key === this._mySessionId) return
@@ -126,17 +146,17 @@ export default class Network {
 
         changes.forEach((change) => {
           const { field, value } = change
-          // if (key === this._mySessionId) {
+           if (key === this._mySessionId) {
           //   phaserEvents.emit(Event.MY_PLAYER_UPDATED, field, value, key)
-          // }
-          // else{
-            // phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
+           }
+           else{
+             phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
             // when a new player finished setting up player name
-            if (field === 'name' && value === '') {
-              phaserEvents.emit(Event.PLAYER_JOINED, player, key)
+            if (field === 'account' && value !== '') {
+              phaserEvents.emit(Event.PLAYER_JOINED, player, key, this._room.maxClients)
               store.dispatch(setPlayerNameMap({ id: key, name: value }))
             }
-          // }
+           }
         })
       }
     }
@@ -166,6 +186,7 @@ export default class Network {
     }
     //asteroid data
     this._room.state.asteroids.onAdd = (asteroid: any, key: string) => {
+      this._asteroidsMap.set(key, asteroid)
       phaserEvents.emit(Event.ASTEROID_CREATED, asteroid, key);
       // track changes on every child object inside the player MapSchema
       //console.log("asteroids created at : ", new Date().getTime())
@@ -215,7 +236,7 @@ export default class Network {
   }
 
   // method to register event listener and call back function when a player joined
-  onPlayerJoined(callback: (Player: any, key: string) => void, context?: any) {
+  onPlayerJoined(callback: (Player: any, key: string, maxClients: number) => void, context?: any) {
     phaserEvents.on(Event.PLAYER_JOINED, callback, context)
   }
   // method to register event listener and call back function when a player left
@@ -342,7 +363,8 @@ export default class Network {
     rotation: number,
     speed_x:number,
     speed_y:number,
-   bulletType:string
+   bulletType:string,
+   teamflag:number
   ) {
     this._room?.send(Message.UPDATE_BULLET,
       {
@@ -351,7 +373,8 @@ export default class Network {
         rotation: rotation,
         speed_x:speed_x,
         speed_y: speed_y,
-        bulletType:bulletType        
+        bulletType:bulletType,
+        teamflag:teamflag        
       })
   }
 
@@ -401,6 +424,11 @@ export default class Network {
     this._room?.send(Message.READY_TO_CONNECT, {clientTime:this.clientTime()})
     phaserEvents.emit(Event.MY_PLAYER_READY)
   }
+
+  changeName(account: string) {
+    phaserEvents.emit(Event.MY_PLAYER_NAME_CHANGE, account)
+  }
+
 
   //method to record user score to the DB when score was changed
   async recordScore (account: string, tokenId: number, shipName: string, tier: number,  score: number) {

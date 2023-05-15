@@ -87,7 +87,6 @@ const Wallet = (props) => {
     const init = async () => {
       await getAvatar();
     }
-
     (isPlayEndless|| isMultiplayer) && init()
   }, [isPlayEndless, isMultiplayer])
 
