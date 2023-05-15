@@ -476,7 +476,7 @@ class MultiplayerScene extends Phaser.Scene {
 	//#region multiplayer
 	
 	// function to add new player to the otherPlayers group
-	private handlePlayerJoined(newShip: any, id: string, maxClients: number) {
+	private handlePlayerJoined(newShip: any, id: string) {
 
 		const otherPlayer = new OtherShip({
 			sargs: {
@@ -493,7 +493,6 @@ class MultiplayerScene extends Phaser.Scene {
 		})
 		//update text scene here
 		this.scene.launch("text", { level: "Multiplayer" })
-		console.log("otherPlayer", otherPlayer);
 		this._otherShips.add(otherPlayer)
 		this._otherShipMap.set(id, otherPlayer)
 
@@ -518,12 +517,12 @@ class MultiplayerScene extends Phaser.Scene {
 
 		//this._shipCount++;
 		//this._room = this._network.getRoomData().b;
-		if (this._otherShips.getLength() < maxClients - 1)
-			return;
+		//console.log("this._otherShips.getLength()", this._otherShips.getLength(), "maxClients", maxClients);
+		// if (this._otherShips.getLength() < maxClients - 1)
+		// 	return;
 		//game Start when other player come in.
 		this.input.keyboard.enabled = true;		
 		// this._waitingText.destroy();
-		console.log("handlePlayerJoined", newShip);
 		if (this._network) this._network.allPlayersReady(true)
 
 		this._gameStarted = true;

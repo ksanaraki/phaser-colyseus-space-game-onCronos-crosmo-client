@@ -87,19 +87,13 @@ export default class Network {
       roomMode,
       mapMode,
       cost
-    });
-
-    try {
-      this._room.maxClients = 2;
-      if (roomMode === "2X2")
-        this._room.maxClients = 4;
-      else if (roomMode === "3X3")
-        this._room.maxClients = 6;
-    }
-    catch(e){
-      console.log(`err in maxCLients`, e)
-    }
-
+    })
+    //console.log("roomMode", roomMode);
+    // this._room.maxClients = 2;
+    // if (roomMode === "2X2")
+    //   this._room.maxClients = 4;
+    // else if (roomMode === "3X3")
+    //   this._room.maxClients = 6;
     this.initialize()
   }
 
@@ -126,7 +120,7 @@ export default class Network {
     })
 
     this._room.onMessage(Message.SEND_OTHER_DATA, (content) => {
-      phaserEvents.emit(Event.PLAYER_JOINED, content.player, content.id, content.maxClients)
+      phaserEvents.emit(Event.PLAYER_JOINED, content.player, content.id)
     })
     
     this._room.onMessage(Message.GET_PLAYERS, (content) => {
@@ -153,7 +147,7 @@ export default class Network {
              phaserEvents.emit(Event.PLAYER_UPDATED, field, value, key)
             // when a new player finished setting up player name
             if (field === 'account' && value !== '') {
-              phaserEvents.emit(Event.PLAYER_JOINED, player, key, this._room.maxClients)
+              phaserEvents.emit(Event.PLAYER_JOINED, player, key)
               store.dispatch(setPlayerNameMap({ id: key, name: value }))
             }
            }
@@ -236,7 +230,7 @@ export default class Network {
   }
 
   // method to register event listener and call back function when a player joined
-  onPlayerJoined(callback: (Player: any, key: string, maxClients: number) => void, context?: any) {
+  onPlayerJoined(callback: (Player: any, key: string) => void, context?: any) {
     phaserEvents.on(Event.PLAYER_JOINED, callback, context)
   }
   // method to register event listener and call back function when a player left
