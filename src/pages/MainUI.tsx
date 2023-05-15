@@ -271,7 +271,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       </Title>
       <Buttons>
         <img className="play" src="assets/images/btn_playendless.png" alt="play endless" onClick={() => playEndless()} />
-        {/* <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => viewMultiplay()} />  */}
+        <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => viewMultiplay()} /> 
         <img className="play" src="assets/images/btn_crosmostation.png" alt="enter crosmostation" />
         <img className="setting" src="assets/images/btn_difficulty.png" alt="difficulty" onClick={() => setIsDifficulty(true)} />
         <img className="setting" src="assets/images/btn_highscores.png" alt="high scores" onClick={() => setIsLeaderboard(true)} />
@@ -291,7 +291,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
         <img src="assets/images/title.png" alt="title" />
       </Title>
       <Buttons>
-        <img className="playmulti" src="assets/images/quick.png" alt="play endless" onClick={() => quickMulti()} />
+        {/* <img className="playmulti" src="assets/images/quick.png" alt="play endless" onClick={() => quickMulti()} /> */}
         <img className="playmulti" src="assets/images/join.png" alt="play endless" onClick={() => joinMulti()} />
         <img className="playmulti" src="assets/images/create.png" alt="play endless" onClick={() => createMulti()} />
       </Buttons>

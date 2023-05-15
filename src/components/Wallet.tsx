@@ -96,30 +96,21 @@ const Wallet = (props) => {
     const oThers = playerList.filter((p: any) => p?.id != curPlayer);
     let allied = oThers.filter((p: any) => p?.val?.team == 1).length;
     let axis = oThers.filter((p: any) => p?.val?.team == 2).length;
-    console.log(`XXX`, me, oThers, allied, axis);
-    switch(me?.val?.team) {
-      case 1:
-        allied += 1;
-        break;
 
-      case 2:
-        axis += 1;
-        break;
-
-      default:
-        break;
+    if(curRoom > allied || curRoom == 0 ) {
+      setAlliedable(true);
     }
-
-    if(curRoom >= allied) {
+    else {
       setAlliedable(false);
     }
 
-    if(curRoom >= axis) {
+    if(curRoom > axis || curRoom == 0) {
+      setAxiable(true);
+    }
+    else {
       setAxiable(false);
     }
 
-    console.log(`curRoom`, curRoom, playerList, curPlayer);
-    
   }, [playerList, curPlayer, curRoom])
 
   const getAvatar = async () => {
@@ -186,6 +177,13 @@ const Wallet = (props) => {
   }
 
   const handleJoin = async () => {
+    if(isMultiplayer && playerTeam == 0) {
+      setSeverity('warning');
+      setNoticeMsg('Select your team!');
+      setShowNotice(true);
+      return;
+    }
+
     setCalculating(true)
     if (Config.VERSION != "DEV" && isPaid)
     {try {
@@ -436,6 +434,11 @@ const Wallet = (props) => {
                     }
                     disabled={!alliedable}
                     label="Allied" 
+                    sx={{
+                      '& .Mui-disabled': {
+                        color: `rgba(255,255,255, 0.5) !important`
+                      }
+                    }}
                   />
                 }
                 {
@@ -445,6 +448,11 @@ const Wallet = (props) => {
                     control={<Radio />} 
                     disabled={!axiable}
                     label="Axis"
+                    sx={{
+                      '& .Mui-disabled': {
+                        color: `rgba(255,255,255, 0.5) !important`
+                      }
+                    }}
                   />
                 }
 
