@@ -269,17 +269,24 @@ class MultiplayerScene extends Phaser.Scene {
 		this._myShip.setRotation(this._myShip.rotLeft)
 
 		let deathSound = this.sound.add(Config.soundAssets.shipExplose.name, { volume: 0.5 })
-		deathSound.on("complete", () => {
+		
+		// deathSound.on("complete", () => {
+		// 	if (this._myShip.Lives < 1) {
+		// 		this.gameOver()
+		// 	} else {
+		// 		this._myShip.respawn(this._width / 2, this._height / 2)
+		// 		this._myShip.respawn(this._width / 2 +1, this._height / 2 +1)
+		// 	}
+		// })
+
+		this._myShip.on("ship_death", () => {
+			deathSound.play()
 			if (this._myShip.Lives < 1) {
 				this.gameOver()
 			} else {
 				this._myShip.respawn(this._width / 2, this._height / 2)
 				this._myShip.respawn(this._width / 2 +1, this._height / 2 +1)
-			}
-		})
-
-		this._myShip.on("ship_death", () => {
-			deathSound.play()			
+			}			
 			this._particles.shipExplode.emitParticleAt(this._myShip.x, this._myShip.y)			
 		})
 

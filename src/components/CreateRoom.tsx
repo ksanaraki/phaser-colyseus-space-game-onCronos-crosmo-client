@@ -137,31 +137,8 @@ const CreateRoom = ({setIsViewMulti, playMultiplayer}) => {
                 }
               </ModeWrapper>
               <Reward>
-                Cost For Creation: {cost} Crons
+                Cost: {cost} Crons
               </Reward>
-              <TextField
-                type={showPassword ? 'text' : 'password'}
-                label="Password (optional)"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setPwd(event.target.value);
-                }}
-                sx={{
-                  '& *': {color: `#FFFFFF`, borderColor: `#FFFFFF`}
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
               <Join onClick={handleSubmit}>
                 Create
               </Join>
