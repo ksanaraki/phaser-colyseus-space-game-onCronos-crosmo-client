@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography'
 
 import * as walletMetamask from "../web3/WalletMetamask"
 import * as walletConnect from "../web3/WalletConnect"
-import * as walletDefiwallet from "../web3/WalletDefiWallet"
 
 const header = {
   fontSize: '25px',

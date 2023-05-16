@@ -8,6 +8,7 @@ export const walletSlice = createSlice({
     shooterInstance: null,
     tokenInstance: null,
     pilotInstance: null,
+    walletConnecting: false
   },
   reducers: {
     setAccount: (state, action) => {
@@ -25,6 +26,9 @@ export const walletSlice = createSlice({
     setPilotInstance: (state, action) => {
       state.pilotInstance = action.payload
     },
+    setWalletConnecting: (state, action) => {
+      state.walletConnecting = action.payload
+    }
   },
 })
 
@@ -33,7 +37,8 @@ export const {
   setCraftInstance,
   setShooterInstance,
   setTokenInstance,
-  setPilotInstance
+  setPilotInstance,
+  setWalletConnecting
 } = walletSlice.actions
 
 export default walletSlice.reducer

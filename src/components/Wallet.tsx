@@ -120,7 +120,7 @@ const Wallet = (props) => {
     const resToken = await tokenInstance["balanceOf"](account);
     setTokenBalance(Number(resToken) / Math.pow(10, 6))
 
-    const tokenIDs: any[] = await craftInstance["walletOfOwner"](account);
+    const tokenIDs: any[] = [1,2,3,4,5]; //await craftInstance["walletOfOwner"](account);
 
     if(Array.isArray(tokenIDs) && tokenIDs.length){
       const baseURI = "https://ipfs.filebase.io/ipfs/QmVPpQFBgmE4tHYfXVrs6vCDjuHXc1tRXyVxjZ9ZUqLf4s"

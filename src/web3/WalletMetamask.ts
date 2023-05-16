@@ -65,9 +65,7 @@ export const connect = async () => {
         config.configVars.mainnet.rpcUrl
       ),
       connected: true,
-      chainId: hexToInt(
-        await window.ethereum.request({ method: "eth_chainId" })
-      ),
+      chainId: hexToInt( await window.ethereum.request({ method: "eth_chainId" }) ),
     }
   } catch (e) {
     console.log("error in connect", e)
