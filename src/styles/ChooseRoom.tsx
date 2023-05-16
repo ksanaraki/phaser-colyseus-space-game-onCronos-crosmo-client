@@ -6,6 +6,35 @@ export const Wrapper = styled.div`
   height: 100vh;
   top: 0;
   background: #00000066;
+  z-index: 9;
+
+  @media only screen and (max-width: 1024px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 960px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 860px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 768px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 639px) {
+    
+  }
+
+  @media only screen and (max-width: 560px) {
+    
+  }
+
+  @media only screen and (max-width: 480px) {
+    
+  }
 `
 
 export const ModalWrapper = styled.div`
@@ -20,6 +49,66 @@ export const ModalWrapper = styled.div`
   height: 576px;
   background-size: contain;
   color: white;
+
+  @media only screen and (max-width: 1024px) and (orientation:landscape) {
+    
+  }
+
+  @media only screen and (max-width: 960px) and (orientation:landscape) {
+    height: 90%;
+    background-size: 150%;
+  }
+
+  @media only screen and (max-width: 860px) and (orientation:landscape) {
+    
+  }
+
+  @media only screen and (max-width: 768px) and (orientation:landscape) {
+    
+  }
+
+  @media only screen and (max-width: 1024px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 1024px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 1024px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 1024px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 960px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 860px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 768px) and (orientation:portrait) {
+    
+  }
+
+  @media only screen and (max-width: 639px) {
+    width: 92%;
+    height: 80%;
+    background-size: cover;
+    z-index: 9;
+  }
+
+  @media only screen and (max-width: 560px) {
+    
+  }
+
+  @media only screen and (max-width: 480px) {
+    
+  }
 `
 
 export const Content = styled.div`
@@ -34,40 +123,68 @@ export const Content = styled.div`
     right: 8px;
     top: 22px;
   }
-`
 
-export const Title = styled.div`
-  margin-top: 160px;
-  margin-bottom: 50px;
-`
+  @media only screen and (max-width: 1024px) and (orientation:landscape) {
+    
+  }
 
-export const Buttons = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  @media only screen and (max-width: 960px) and (orientation:landscape) {
+    height: calc(100% - 36px);
+    margin-top: 36px;
 
-  img.RoomButton {
-    width: 150px;
-    margin-top: 10px;
-    cursor: pointer;
-  }  
-`
-export const Backdrop = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
-  align-items: center;
+    img.close {
+      width: 32px;
+      right: 0px;
+      top: 0px;
+    }
+  }
+
+  @media only screen and (max-width: 860px) and (orientation:landscape) {
+    
+  }
+
+  @media only screen and (max-width: 768px) and (orientation:landscape) {
+    
+  }
+
+  @media only screen and (max-width: 639px) {
+    height: calc(100% - 108px);
+    margin-top: 108px;
+    img.close {
+      position: absolute;
+      width: 32px;
+      cursor: pointer;
+      right: 0px;
+      top: 18px;
+    }
+  }
+
+  @media only screen and (max-width: 560px) {
+    
+  }
+
+  @media only screen and (max-width: 480px) {
+    height: calc(100% - 64px);
+    margin-top: 64px;
+  }
 `
 
 export const Table = styled.div`
     width: calc(100% - 46px);
     margin: 0 auto;
     height: 100%;
+
+    @media only screen and (max-width: 639px) {
+      width: 94%;
+    }
+  
+    @media only screen and (max-width: 560px) {
+      
+    }
+  
+    @media only screen and (max-width: 480px) {
+      
+    }
 `
 
 export const THead = styled.div`
@@ -80,6 +197,24 @@ export const THead = styled.div`
   width: 100%;
   font-size: 24px;
   padding: 8px 0px;
+
+  @media only screen and (max-width: 960px) and (orientation:landscape) {
+    font-size: 18px;
+    padding: 8px 0px;
+  }
+
+  @media only screen and (max-width: 639px) {
+    font-size: 18px;
+    padding: 8px 0px;
+  }
+
+  @media only screen and (max-width: 560px) {
+    
+  }
+
+  @media only screen and (max-width: 480px) {
+    
+  }
 `
 
 export const TBody = styled.div`
@@ -131,7 +266,6 @@ export const Identify = styled.div`
   width: 30%;
   padding-left: 8px;
 `
-
 export const Room = styled.div`
   width: 15%;
 `

@@ -31,7 +31,7 @@ import {
   Reward,
   Join,
   ModeWrapper
-} from '../styles/Wallet'
+} from '../styles/CreateRoom'
 import { IRoomData } from 'types/Rooms';
 import PhaserGame from 'phaser/PhaserGame';
 import Boot from 'phaser/scenes/BootScene';
