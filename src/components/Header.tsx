@@ -32,7 +32,9 @@ const Header = ({ account, setWallet, setBg }) => {
   const connectWalletPressed = async () => {
     if(!account) {
       const w = await connectAccount();
-      setWallet(w);
+      if(w) {
+        setWallet(w);
+      }
     }
     else {
       if(!walletConnecting) {

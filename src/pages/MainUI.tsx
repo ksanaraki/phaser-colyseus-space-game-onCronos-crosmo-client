@@ -363,6 +363,8 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       background: 'rgba(0, 0, 0, .5)',
       top: 0,
       left: 0,
+      bottom: 0,
+      right: 0,
       pointerEvents: 'stroke',
       zIndex: 999
     }}>
