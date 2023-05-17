@@ -375,6 +375,9 @@ class PlayScene extends Phaser.Scene {
 
 			},
 		});
+		if (this._network) this._network.allPlayersReady(true)
+
+		this._gameStarted = true;
 	}
 
 	updateBulletLaunchDataToserver(x: number, y: number, rotation: number, speed: number, shooter: any,teamflag:number) {

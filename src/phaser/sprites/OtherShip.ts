@@ -1,4 +1,6 @@
 import Ship from "./Ship"
+import Config from "./../../types/config/config"
+import { BULLET_TYPE, BONUS_FIRECOOLDOWN, BONUS_LIFE, BONUS_MAXBULLET } from './../../types/config/helper'
 
 class OtherShip extends Ship {
 
@@ -21,6 +23,11 @@ class OtherShip extends Ship {
   _timetemp = 0;
   constructor({ sargs, team, id, shipPros, tier }) {
     super(sargs, id, tier, false)
+
+    let startingLives = shipPros.isBroken ? (Config.shipPros.startingLives - 1) : Config.shipPros.startingLives
+    this.Lives = startingLives + BONUS_LIFE[shipPros.tier]
+    console.log("this.Lives",startingLives,BONUS_LIFE, shipPros.tier)
+    
     this._team = team;
     this._shipId = id;
     this._targetPosition = { x: sargs.x, y: sargs.y }
@@ -203,6 +210,15 @@ class OtherShip extends Ship {
     this.setPosition(x, y)
     this._shipBody.setVelocity(0)
     //this.makeTempInvulnerable(3)
+  }
+  get Lives() {
+    return this._lives
+  }
+
+  set Lives(value: number) {
+    if (value > Config.shipPros.startingLives + BONUS_LIFE[this._tier]) return
+    this._lives = value
+    this.scene.registry.set('playerLives', this._lives)
   }
 }
 

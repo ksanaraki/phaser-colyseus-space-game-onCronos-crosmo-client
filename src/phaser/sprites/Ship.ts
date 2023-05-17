@@ -33,8 +33,7 @@ class Ship extends Entity {
     this._tier = shipPros.tier | 0
     this._hasCombat = hasCombat
     this._playerTexture = sargs.texture
-    let startingLives = shipPros.isBroken ? (Config.shipPros.startingLives - 1) : Config.shipPros.startingLives
-    this.Lives = startingLives + BONUS_LIFE[shipPros.tier]
+
 
     // Physics settings
     this._shield = this.scene.add.sprite(this.x, this.y, Config.graphicAssets.shield.name)
@@ -114,15 +113,7 @@ class Ship extends Entity {
       }, null, this)
   }
 
-  get Lives() {
-    return this._lives
-  }
 
-  set Lives(value: number) {
-    if (value > Config.shipPros.startingLives + BONUS_LIFE[this._tier]) return
-    this._lives = value
-    this.scene.registry.set('playerLives', this._lives)
-  }
 
   /**
    * Reloads the gun on this ship.

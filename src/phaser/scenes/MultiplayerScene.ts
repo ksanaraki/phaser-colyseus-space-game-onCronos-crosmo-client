@@ -284,8 +284,10 @@ class MultiplayerScene extends Phaser.Scene {
 			if (this._myShip.Lives < 1) {
 				this.gameOver()
 			} else {
-				this._myShip.respawn(this._width / 2, this._height / 2)
-				this._myShip.respawn(this._width / 2 +1, this._height / 2 +1)
+				this.time.delayedCall(3000,()=>{
+					this._myShip.respawn(this._width / 2, this._height / 2)
+				})
+				
 			}			
 			this._particles.shipExplode.emitParticleAt(this._myShip.x, this._myShip.y)			
 		})
@@ -646,6 +648,7 @@ class MultiplayerScene extends Phaser.Scene {
 	}
 	private handleAsteroidChangesUpdated(changes: any, id: string) {
 		const asteroid = this._asteroidsMap.get(id)
+
 		if(!this._asteroidsMap.has(id))
 		{
 			console.log("this._network._asteroidsMap", this._network._asteroidsMap);
@@ -653,7 +656,6 @@ class MultiplayerScene extends Phaser.Scene {
 			if (this._network._asteroidsMap.has(id)) 
 				this.handleAsteroidCreated(netAsteroid, id, id)
 		}
-			
 		 asteroid?.updateServerDataChangesAsteroid(changes,this._network._dtServer2Client)
 	}
 	//airdrop part

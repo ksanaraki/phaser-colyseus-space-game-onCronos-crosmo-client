@@ -92,6 +92,10 @@ export class StandardGun extends GunModule {
 		this.spendBullet()
 		if (this._scene._network) {
 			//send data when bullet launched
+			if(this._owner.team === undefined)
+			{
+					this._owner.team = 1;
+			}
 			this._scene.updateBulletLaunchDataToserver(x, y, rotation, speed, this._owner,this._owner.team);
 			this._scene.spawnRandomBullet(x, y, rotation, speed , this._owner, true,this._owner.team)
 		}

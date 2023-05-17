@@ -6,6 +6,8 @@ import Config from "./../../types/config/config"
 
 import { JoystickMovement } from 'components/Joystick'
 
+import { BULLET_TYPE, BONUS_FIRECOOLDOWN, BONUS_LIFE, BONUS_MAXBULLET } from './../../types/config/helper'
+
 class MyShip extends Ship {
 
   _shipBody: any
@@ -43,6 +45,11 @@ class MyShip extends Ship {
 
   constructor({ sargs, id, shipPros, hasCombat, inputKeys: { forward, brake, left, right, fire } }) {
     super(sargs, id, shipPros, hasCombat)
+
+    let startingLives = shipPros.isBroken ? (Config.shipPros.startingLives - 1) : Config.shipPros.startingLives
+    this.Lives = startingLives + BONUS_LIFE[shipPros.tier]
+    console.log("this.Lives",startingLives,BONUS_LIFE, shipPros.tier)
+    
     // ship play settings
     this._maxVelocity = Config.shipPros.maxVelocity
     this.Score = 0
@@ -297,6 +304,16 @@ class MyShip extends Ship {
     this._shipBody.setVelocity(0)
     this.makeTempInvulnerable(3)
   }
+  get Lives() {
+    return this._lives
+  }
+
+  set Lives(value: number) {
+    if (value > Config.shipPros.startingLives + BONUS_LIFE[this._tier]) return
+    this._lives = value
+    this.scene.registry.set('playerLives', this._lives)
+  }
 }
+
 
 export default MyShip

@@ -32,8 +32,8 @@ class Asteroid extends Entity {
     this.setOrigin(0.5, 0.5)
     if (this._size === ASTEROID_SIZE.LARGE) this.setCircle(29)
     if (this._size === ASTEROID_SIZE.SMALL) this.setCircle(19)
-    //this.setVelocity(vx, vy)
-    //this.setAngularVelocity(randRange(-angVelRange, angVelRange))
+    this.setVelocity(vx, vy)
+    this.setAngularVelocity(randRange(-angVelRange, angVelRange))
   }
 
   updateServerDataAsteroid(field: string, value: number | string | boolean, deltaTime: number) {

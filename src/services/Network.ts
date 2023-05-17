@@ -189,7 +189,7 @@ export default class Network {
           phaserEvents.emit(Event.ASTEROID_CHANGES_UPDATED, changes, key)
         changes.forEach((change) => {
           const { field, value } = change
-          // phaserEvents.emit(Event.ASTEROID_UPDATED, field, value, key)
+           //phaserEvents.emit(Event.ASTEROID_UPDATED, field, value, key)
           if (field === 'curServerTime') {
             this.setDtServer2Client(value)
             }
