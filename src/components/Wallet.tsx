@@ -461,7 +461,7 @@ const Wallet = (props) => {
                 </>)}
               </UpdateLevel>
               <Reward>
-                <span>Pay for Play?</span> <Checkbox defaultChecked sx={{ '& .MuiSvgIcon-root': { fontSize: 28 }, '& *': {color: `white`, borderColor: `white`} }} checked={isPaid} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                <span>Pay To Play?</span> <Checkbox defaultChecked sx={{ '& .MuiSvgIcon-root': { fontSize: 28 }, '& *': {color: `white`, borderColor: `white`} }} checked={isPaid} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setIsPaid(event.target.checked);
                 }}/>
               </Reward>

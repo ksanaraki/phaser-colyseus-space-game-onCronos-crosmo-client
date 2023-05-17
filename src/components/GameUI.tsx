@@ -94,9 +94,93 @@ const GameUI = ({ specialKey }) => {
 
   return (
     <>
-        {shieldPercent !== 0 && <CircularProgress color="success" variant="determinate" value={shieldPercent} size={64} sx={{position: `absolute`, right: 16, top: bulletPercent !== 0 ? `40%` : `50%`}}/>}
-        {bulletPercent !== 0 && <CircularProgress variant="determinate" value={bulletPercent} size={64} sx={{position: `absolute`, right: 16, top: shieldPercent !== 0 ? `60%` : `50%`}}/>}
-        {hasAtomic && <Typography sx={{
+      <Box sx={{
+        display: 'flex',
+        position: `fixed`,
+        justifyContent: 'flex-end',
+        right: {
+          xs: `-120px`,
+          sm: `-120px`,
+          md: `-240px`,
+          lg: `-280px`,
+          xl: `-370px`
+        }
+      }}>
+        {shieldPercent != 0 && <Box sx={{
+          textAlign: 'center'
+        }}>
+          <Box sx={{
+            width: {
+              xs: `320px`,
+              sm: `320px`,
+              md: `560px`,
+              lg: `640px`,
+              xl: `820px`
+            },
+            transform: 'rotate(-90deg)',
+          }}>
+            <ShieldLinearProgress variant="determinate" value={shieldPercent} />
+          </Box>
+          <Typography sx={{
+            fontSize: '18px',
+            color: '#24c2bc',
+            paddingTop: {
+              xs: `160px`,
+              sm: `160px`,
+              md: `280px`,
+              lg: `320px`,
+              xl: `410px`
+            }
+          }}>
+            SHIELD
+          </Typography>
+        </Box>}
+      </Box>
+
+      <Box sx={{
+        display: 'flex',
+        position: `fixed`,
+        justifyContent: 'flex-end',
+        right: {
+          xs: shieldPercent == 0 ? `-120px` : `-70px`,
+          sm: shieldPercent == 0 ? `-120px` : `-70px`,
+          md: shieldPercent == 0 ? `-240px` : `-190px`,
+          lg: shieldPercent == 0 ? `-280px` : `-220px`,
+          xl: shieldPercent == 0 ? `-370px` : `-320px`
+        }
+      }}>
+        {bulletPercent != 0 && <Box sx={{
+          textAlign: 'center'
+        }}>
+          <Box sx={{
+            width: {
+              xs: `320px`,
+              sm: `320px`,
+              md: `560px`,
+              lg: `640px`,
+              xl: `820px`
+            },
+            transform: 'rotate(-90deg)',
+          }}>
+            <BulletLinearProgress variant="determinate" value={bulletPercent} />
+          </Box>
+          <Box 
+            sx={{
+              paddingTop: {
+                xs: `160px`,
+                sm: `160px`,
+                md: `280px`,
+                lg: `320px`,
+                xl: `410px`
+              }
+            }}
+          >
+            <img src={`assets/images/icon_ATOMIC_BULLET.png`} alt="airdrop icon" />
+          </Box>
+        </Box>}
+      </Box>
+
+      {hasAtomic && <Typography sx={{
           color: 'white',
           position: 'absolute',
           bottom: '65px',
@@ -104,7 +188,8 @@ const GameUI = ({ specialKey }) => {
           fontSize: '20px'
         }}>
         Press "{specialKey}" to use atomic bomb
-      </Typography>}
+        </Typography>
+      }
     </>
   )
 }
