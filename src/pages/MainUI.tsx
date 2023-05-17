@@ -93,7 +93,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   const [severity, setSeverity] = useState('')
 
   useEffect(() => {
-    console.log(`process`, process.env);
     if (account !== undefined && chainId === configVars.mainnet.chainId) {
       const craftContract = new ethers.Contract(craftContractAddr, craftAbi, web3Provider)
       const shooterContract = new ethers.Contract(shooterContractAddr, shooterAbi, web3Provider)
@@ -272,7 +271,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       </Title>
       <Buttons>
         <img className="play" src="assets/images/btn_playendless.png" alt="play endless" onClick={() => playEndless()} />
-        <img className="play" src="assets/images/btn_playmultiplayer.png" alt="Multiplayer Mode" onClick={() => viewMultiplay()} /> 
         <img className="play" src="assets/images/btn_crosmostation.png" alt="enter crosmostation" />
         <img className="setting" src="assets/images/btn_difficulty.png" alt="difficulty" onClick={() => setIsDifficulty(true)} />
         <img className="setting" src="assets/images/btn_highscores.png" alt="high scores" onClick={() => setIsLeaderboard(true)} />
