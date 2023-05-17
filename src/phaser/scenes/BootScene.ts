@@ -122,7 +122,6 @@ Config.graphicAssets.shipsTypes.forEach((name)=>{
 		})
 		store.dispatch(setRoomJoined(true))
 		if (this._network) {
-			console.log("StartMulti");
 			this._network.readyToConnect();
 			this._network.changeName('1');
 

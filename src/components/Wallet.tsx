@@ -120,7 +120,7 @@ const Wallet = (props) => {
     const resToken = await tokenInstance["balanceOf"](account);
     setTokenBalance(Number(resToken) / Math.pow(10, 6))
 
-    const tokenIDs: any[] = [1,2,3,4,5]; //await craftInstance["walletOfOwner"](account);
+    const tokenIDs: any[] = process.env.NODE_ENV == "development" ? [1,2,3,4,5] : await craftInstance["walletOfOwner"](account);
 
     if(Array.isArray(tokenIDs) && tokenIDs.length){
       const baseURI = "https://ipfs.filebase.io/ipfs/QmVPpQFBgmE4tHYfXVrs6vCDjuHXc1tRXyVxjZ9ZUqLf4s"
@@ -184,12 +184,11 @@ const Wallet = (props) => {
     }
 
     setCalculating(true)
-    if (Config.VERSION != "DEV" && isPaid)
+    if (process.env.NODE_ENV != "development" && isPaid)
     {try {
       const tx = await shooterInstance["enterGame"]({ from: account, value: '1000000000000000000' })
       const rc = await tx.wait()
       const event = rc.events
-      console.log('event', event)
     } catch (e) {
       console.log('error in enterGame', e)
       setSeverity('error')

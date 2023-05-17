@@ -93,6 +93,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
   const [severity, setSeverity] = useState('')
 
   useEffect(() => {
+    console.log(`process`, process.env);
     if (account !== undefined && chainId === configVars.mainnet.chainId) {
       const craftContract = new ethers.Contract(craftContractAddr, craftAbi, web3Provider)
       const shooterContract = new ethers.Contract(shooterContractAddr, shooterAbi, web3Provider)

@@ -355,12 +355,11 @@ class MultiplayerScene extends Phaser.Scene {
 	//#endregion
 
 	create(data: { network: Network, shipPros: any, gameProps: any }) {
-		console.log("this.sys.game.device.os",this.sys.game.device.os)
 		// this._waitingText = this.add.text(this._width/6, this._height/5, "Waiting for other Openent...", Config.fontAssets.waitingFontStyle)
 		// this.input.keyboard.enabled = false;
 		let curOS = this.sys.game.device.os;
 		this._joyStick = this.plugins.get('rexvirtualjoystickplugin');
-		console.log("joystick", this._joyStick)
+
 		if(curOS.android===true){
 			this._joyStick.add(this, {
 				x: 200,
@@ -561,7 +560,6 @@ class MultiplayerScene extends Phaser.Scene {
 
 	//#region multiplayer bullet
 	private handleBulletCreated(newBullet: any, id: string, key: string) {
-        console.log("newBullet ", newBullet ,"_mySessionId", this._network._mySessionId);
 	    if (newBullet.owner != this._network._mySessionId)
 		{
 		/*let posX: number
@@ -651,7 +649,6 @@ class MultiplayerScene extends Phaser.Scene {
 
 		if(!this._asteroidsMap.has(id))
 		{
-			console.log("this._network._asteroidsMap", this._network._asteroidsMap);
 			const netAsteroid = this._network._asteroidsMap.get(id);
 			if (this._network._asteroidsMap.has(id)) 
 				this.handleAsteroidCreated(netAsteroid, id, id)
@@ -754,7 +751,6 @@ class MultiplayerScene extends Phaser.Scene {
 				 )
 			}
 			if (bullet._owner == this._myShip){
-			    console.log("spawnRandomAirdrop3", bullet);
 			    this.spawnRandomAirdrop(asteroidOrEnemy, this._mySessionId, this._airdropPercentAsteroid)
 			}
 			this.splitAsteroid(asteroidOrEnemy)
@@ -847,7 +843,6 @@ class MultiplayerScene extends Phaser.Scene {
 
         const searchValue = airdrop
         const key = this.getKeyByValue(this._airdropsMap, searchValue)
-        console.log("kkkk", this._airdropsMap, "kkkk", searchValue);
 		this._network.removeAirdropToServer(key)
 		airdrop.destroy()
 	}

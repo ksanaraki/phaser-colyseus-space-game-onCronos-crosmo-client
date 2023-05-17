@@ -34,7 +34,7 @@ export default class Network {
     //const protocol = window.location.protocol.replace('http', 'ws')
     //const endpoint =  `${protocol}//${window.location.hostname}:2083`
     // const endpoint='ws://3.224.34.61:2083'
-    const endpoint = CONFIG.environment.END_POINT;
+    const endpoint = process.env.REACT_APP_SERVER_ENDPOINT;
     
     console.log("connect to ", endpoint, " at : ", new Date().getTime());
     this._client = new Client(endpoint)

@@ -12,9 +12,37 @@ const hexToInt = (s) => {
   const bn = ethers.BigNumber.from(s)
   return parseInt(bn.toString())
 }
-const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+export const switchNetwork = async () => {
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: config.configVars.mainnet.chainIdHex }],
+    })
+  } catch (e) {
+    console.log('error in switchNetwork', e)
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: config.configVars.mainnet.chainIdHex,
+          chainName: config.configVars.mainnet.chainName,
+          rpcUrls: [config.configVars.mainnet.rpcUrl],
+          nativeCurrency: config.configVars.mainnet.nativeCurrency,
+          blockExplorerUrls: [config.configVars.mainnet.blockExplorerUrl],
+        },
+      ],
+    })
+  }
+}
 
 export const connectAccount = async (firstRun = false, type = "") => {
+  let chainId = await window.ethereum.request({ method: "eth_chainId" })
+  if (!(chainId === config.configVars.mainnet.chainIdHex)) {
+    await switchNetwork()
+    await delay(2000)
+  }
 
     const providerOptions = {
       injected: {
@@ -104,6 +132,7 @@ export const connectAccount = async (firstRun = false, type = "") => {
 
         window.location.reload();
       });
+
       store.dispatch(setWalletConnecting(false));
       return {
         walletProviderName: web3provider.isMetaMask ? `metamask` : `walletconnect`,
@@ -114,7 +143,7 @@ export const connectAccount = async (firstRun = false, type = "") => {
         ),
         wcProvider: provider,
         connected: true,
-        chainId: web3provider.isMetaMask ? hexToInt( await window.ethereum.request({ method: "eth_chainId" }) ) : web3provider.chainId,
+        chainId: web3provider.isMetaMask ? hexToInt( await window.ethereum.request({ method: "eth_chainId" }) ) : hexToInt(web3provider.chainId),
       }
     } catch (error) {
       console.log("Error connecting wallet!", error);
