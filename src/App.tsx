@@ -14,7 +14,6 @@ import { Wrapper, ProgressBarWrapper, SubTitle } from './styles/App'
 const ProgressBar = styled(LinearProgress)`
   width: 360px;
 `
-
 const App = () => {
 
   const lobbyJoined = useAppSelector((state) => state.room.lobbyJoined)

@@ -99,8 +99,8 @@ const GameUI = ({ specialKey }) => {
         position: `fixed`,
         justifyContent: 'flex-end',
         right: {
-          xs: `-120px`,
-          sm: `-120px`,
+          xs: `-110px`,
+          sm: `-110px`,
           md: `-240px`,
           lg: `-280px`,
           xl: `-370px`
@@ -111,8 +111,8 @@ const GameUI = ({ specialKey }) => {
         }}>
           <Box sx={{
             width: {
-              xs: `320px`,
-              sm: `320px`,
+              xs: `270px`,
+              sm: `270px`,
               md: `560px`,
               lg: `640px`,
               xl: `820px`
@@ -125,8 +125,8 @@ const GameUI = ({ specialKey }) => {
             fontSize: '18px',
             color: '#24c2bc',
             paddingTop: {
-              xs: `160px`,
-              sm: `160px`,
+              xs: `130px`,
+              sm: `130px`,
               md: `280px`,
               lg: `320px`,
               xl: `410px`
@@ -142,11 +142,11 @@ const GameUI = ({ specialKey }) => {
         position: `fixed`,
         justifyContent: 'flex-end',
         right: {
-          xs: shieldPercent == 0 ? `-120px` : `-70px`,
-          sm: shieldPercent == 0 ? `-120px` : `-70px`,
+          xs: shieldPercent == 0 ? `-110px` : `-50px`,
+          sm: shieldPercent == 0 ? `-110px` : `-50px`,
           md: shieldPercent == 0 ? `-240px` : `-190px`,
           lg: shieldPercent == 0 ? `-280px` : `-220px`,
-          xl: shieldPercent == 0 ? `-370px` : `-320px`
+          xl: shieldPercent == 0 ? `-370px` : `-310px`
         }
       }}>
         {bulletPercent != 0 && <Box sx={{
@@ -154,8 +154,8 @@ const GameUI = ({ specialKey }) => {
         }}>
           <Box sx={{
             width: {
-              xs: `320px`,
-              sm: `320px`,
+              xs: `270px`,
+              sm: `270px`,
               md: `560px`,
               lg: `640px`,
               xl: `820px`
@@ -167,8 +167,8 @@ const GameUI = ({ specialKey }) => {
           <Box 
             sx={{
               paddingTop: {
-                xs: `160px`,
-                sm: `160px`,
+                xs: `130px`,
+                sm: `130px`,
                 md: `280px`,
                 lg: `320px`,
                 xl: `410px`

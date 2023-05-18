@@ -14,7 +14,7 @@ import { setShieldName, setShieldDuration, setHasAtomic, setIsExist, setBulletNa
 
 const FireButtonWrapper = styled.div`
   position: fixed;
-  bottom: 60px;
+  bottom: 40px;
   right: 20px;
 `
 

@@ -6,6 +6,8 @@ import MultiplayerScene from './scenes/MultiplayerScene'
 import TextScene from './scenes/TextScene'
 import GameOver from './scenes/GameOver'
 
+const aspect = 16 / 9;
+
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: 'phaser-game',
@@ -24,9 +26,9 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     parent: 'phaser-example',
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: window.innerWidth * window.devicePixelRatio,
-    height: window.innerHeight * window.devicePixelRatio
-},
+    width: 1600,
+    height: 900
+  },
   physics: {
     default: 'arcade',
     arcade: {
@@ -38,7 +40,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scene: [BootScene, PlayScene, MultiplayerScene, TextScene, GameOver],
 }
 
-const phaserGame = new Phaser.Game(config)
-  ; (window as any).game = phaserGame
+const phaserGame = new Phaser.Game(config); 
+(window as any).game = phaserGame
 
 export default phaserGame
