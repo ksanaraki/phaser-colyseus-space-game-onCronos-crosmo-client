@@ -122,6 +122,9 @@ class PlayScene extends Phaser.Scene {
 
 	_bossMode: boolean
 
+	_firstBackImgRandom: number
+	_firstBgRandom: number
+
 	//#region init	
 	init() {
 		// set game config variable data
@@ -133,6 +136,9 @@ class PlayScene extends Phaser.Scene {
 		this._passedIntro = false
 		this._isEnableSoundEffect = true
 		this._isEnableBgSound = true
+
+		this._firstBackImgRandom = 	Math.round(Math.random() * 10);
+		this._firstBgRandom  = Math.round(Math.random() * 6);
 
 		this._startingAsteroids = Config.asteroidPros.startingAsteroids
 		this._maxAsteroids = Config.asteroidPros.maxAsteroids
@@ -186,7 +192,7 @@ class PlayScene extends Phaser.Scene {
 
 		//sets up background
 		this._backImg = Config.graphicAssets.background[0].name;
-		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background[0].name)
+		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background[this._firstBackImgRandom].name)
 		this._backgroundSprite.displayWidth = Config.gamePros.screenWidth
 		this._backgroundSprite.displayHeight = Config.gamePros.screenHeight
 		this._backgroundSprite.setOrigin(0);
@@ -320,7 +326,7 @@ class PlayScene extends Phaser.Scene {
 			delay: 1000,
 			callback: () => {
 				this._backBg = Config.soundAssets.bg[0].name;
-				this._bgSound = this.sound.add(Config.soundAssets.bg[0].name);
+				this._bgSound = this.sound.add(Config.soundAssets.bg[this._firstBgRandom].name);
 				this._bgSound.setLoop(true);
 			},
 		})
@@ -1004,7 +1010,7 @@ class PlayScene extends Phaser.Scene {
 		if (this._myShip && this._network) this._myShip.updateToServer(this._network);
 
 		if (this.input.keyboard.addKey(this._specialKey).isDown) {
-			if (this._myShip._hasAtomic) {
+			if (!this._myShip._hasAtomic) {
 				this.spawnRegionBullet(this._center.x, this._center.y, this, 'atomic')
 				this._myShip._hasAtomic = false
 				store.dispatch(setHasAtomic(false))
@@ -1013,16 +1019,16 @@ class PlayScene extends Phaser.Scene {
 	}
 
 	changeEnvPerLevel() {
-		const bgImageRes = this._level % Config.graphicAssets.background.length;
-		const bgMusicRes = this._level % Config.soundAssets.bg.length;
+		const bgImageRes = (this._level + this._firstBackImgRandom) % Config.graphicAssets.background.length;
+		const bgMusicRes = (this._level + this._firstBgRandom) % Config.soundAssets.bg.length;
 
-		if((`${bgImageRes}` != this._backImg) && this._backgroundSprite) {
+		if((`${bgImageRes}` != this._backImg) && this._backgroundSprite && this._level != 0) {
 			this._backImg = `${bgImageRes}`;
 			//sets up background
 			this._backgroundSprite.setTexture(Config.graphicAssets.background[bgImageRes].name);
 		}
 
-		if((`${bgMusicRes}` != this._backBg) && this._bgSound) {
+		if((`${bgMusicRes}` != this._backBg) && this._bgSound &&  this._level != 0) {
 			this._bgSound.stop();
 			this._bgSound.destroy();
 			this._backBg = `${bgMusicRes}`;

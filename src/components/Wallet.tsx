@@ -207,8 +207,6 @@ const Wallet = (props) => {
       setCalculating(false)
       return;
     }
-
-    setCalculating(false)
     localStorage.setItem('jwt', JSON.stringify(res))
    
     store.dispatch(setTokenId(crafts[avatarIndex].tokenId))
@@ -228,13 +226,13 @@ const Wallet = (props) => {
     if (shipPros.damagedLevel >= 5) {
       setSeverity('error')
       setNoticeMsg("Your craft is damaged.")
-      setShowNotice(true)
+      setShowNotice(true);
     } else {
       if (isMultiplayer && viewMultiMode != MultiMode.Quick) {
         if (lobbyJoined) {
-          boot.startMultiGame(shipPros, gameProps)
           setIsGamePlaying(true)
-          setBg('')
+          setBg('');
+          boot.startMultiGame(shipPros, gameProps)
         } else {
           setSeverity('error')
           setNoticeMsg('Trying to connect to server, please try again!')
@@ -246,18 +244,20 @@ const Wallet = (props) => {
           boot._network
           .joinOrCreatePublic()
           .then(() => {
-            boot.startGame(shipPros, gameProps)
             setIsGamePlaying(true)
-            setBg('')
+            setBg('');
+            boot.startGame(shipPros, gameProps)
           })
           .catch((error) => console.error('error in joinOrCreatePublic', error))
         } else {
           setSeverity('error')
           setNoticeMsg('Trying to connect to server, please try again!')
-          setShowNotice(true)
+          setShowNotice(true);
         }
       }
     }
+
+    setCalculating(false)
   }
 
   const updateLevel = async () => {
@@ -303,7 +303,6 @@ const Wallet = (props) => {
           setSeverity("error")
           setNoticeMsg(`Error occurred in upgrading Crosmocraft.`)
           setShowNotice(true)
-          setCalculating(false)
           setCalculating(false)
         }
       } else {
