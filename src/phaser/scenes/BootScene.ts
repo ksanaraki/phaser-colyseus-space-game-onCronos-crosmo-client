@@ -90,12 +90,18 @@ Config.graphicAssets.shipsTypes.forEach((name)=>{
 		this.load.image(Config.graphicAssets.lifeEmpty.name, Config.graphicAssets.lifeEmpty.URL)
 		this.load.image(Config.graphicAssets.lifeFull.name, Config.graphicAssets.lifeFull.URL)
 
-		this.load.image(Config.graphicAssets.background.name, Config.graphicAssets.background.URL)
+		for(let i = 0; i < Config.graphicAssets.background.length; i++) {
+			this.load.image(Config.graphicAssets.background[i].name, Config.graphicAssets.background[i].URL)
+		}
+
 		this.load.atlas(Config.graphicAssets.particles.name, Config.graphicAssets.particles.URL, Config.graphicAssets.particles.data)
 		this.load.atlas(Config.graphicAssets.lazerEffectParticle.name, Config.graphicAssets.lazerEffectParticle.URL, Config.graphicAssets.lazerEffectParticle.data)
 		this.load.image(Config.graphicAssets.shield.name, Config.graphicAssets.shield.URL)
+		
+		for(let i = 0; i < Config.soundAssets.bg.length; i++) {
+			this.load.audio(Config.soundAssets.bg[i].name, Config.soundAssets.bg[i].URL)
+		}
 
-		this.load.audio(Config.soundAssets.bg.name, Config.soundAssets.bg.URL)
 		this.load.audio(Config.soundAssets.destroyed.name, Config.soundAssets.destroyed.URL)
 		this.load.audio(Config.soundAssets.fire.name, Config.soundAssets.fire.URL)
 		this.load.audio(Config.soundAssets.engine.name, Config.soundAssets.engine.URL)

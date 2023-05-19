@@ -18,6 +18,8 @@ class MyShip extends Ship {
   _shipName: string
   _paid: boolean
   _team: number
+  _wasted: number
+  _hits: number
 
   _score: number
   _vulnerable: boolean
@@ -80,6 +82,8 @@ class MyShip extends Ship {
     this._shipName = shipPros?.name;
     this._paid = shipPros?.paid;
     this._team = shipPros?.team;
+    this._wasted = shipPros?.wasted;
+    this._hits = shipPros?.hits;
   }
 
   get Score() {
@@ -182,7 +186,11 @@ class MyShip extends Ship {
     }
 
     if (this._fireKey.isDown ) {
-      this._gunModule.setTriggerHeld(true)
+      this._gunModule.setTriggerHeld(true);
+      if(this._gunModule._isFired) {
+        this._wasted += 1;
+        this.setAccuracy();
+      }
     } else {
       this._gunModule.setTriggerHeld(false)
     }
@@ -214,7 +222,9 @@ class MyShip extends Ship {
         this._tokenId,
         this._tier,
         this._paid,
-        this._team
+        this._team,
+        this._wasted,
+        this._hits
       )      
     }
   }
@@ -312,6 +322,11 @@ class MyShip extends Ship {
     if (value > Config.shipPros.startingLives + BONUS_LIFE[this._tier]) return
     this._lives = value
     this.scene.registry.set('playerLives', this._lives)
+  }
+
+  setAccuracy() {
+    const acc = ((this._hits / this._wasted) * 100).toFixed(1) ;
+    this.scene.registry.set('accuracy', acc);
   }
 }
 

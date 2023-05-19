@@ -52,7 +52,6 @@ export const roomSlice = createSlice({
       // state.roomDescription = action.payload.description
     },
     setPlayerList: (state, action: PayloadAction<any[]>) => {
-      console.log(`payloadpayloadpayloadpayload`, action.payload);
       state.playerList = action.payload.filter((room) => true)
     },
     setAvailableRooms: (state, action: PayloadAction<RoomAvailable[]>) => {

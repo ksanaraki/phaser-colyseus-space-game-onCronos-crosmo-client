@@ -113,8 +113,6 @@ class Ship extends Entity {
       }, null, this)
   }
 
-
-
   /**
    * Reloads the gun on this ship.
    */

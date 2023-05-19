@@ -12,10 +12,52 @@ const config = {
     screenHeight:900,
   },
   graphicAssets: {
-    background: {
-      URL: "assets/images/bg_shooter.png",
-      name: "background"
-    },
+    background: [
+      {
+        URL: `assets/images/backgrounds/0.png`,
+        name: "0"
+      },
+      {
+        URL: `assets/images/backgrounds/1.png`,
+        name: "1"
+      },
+      {
+        URL: `assets/images/backgrounds/2.png`,
+        name: "2"
+      },
+      {
+        URL: `assets/images/backgrounds/3.png`,
+        name: "3"
+      },
+      {
+        URL: `assets/images/backgrounds/4.png`,
+        name: "4"
+      },
+      {
+        URL: `assets/images/backgrounds/5.png`,
+        name: "5"
+      },
+      {
+        URL: `assets/images/backgrounds/6.png`,
+        name: "6"
+      },
+      {
+        URL: `assets/images/backgrounds/7.png`,
+        name: "7"
+      },
+      {
+        URL: `assets/images/backgrounds/8.png`,
+        name: "8"
+      },
+      {
+        URL: `assets/images/backgrounds/9.png`,
+        name: "9"
+      },
+      {
+        URL: `assets/images/backgrounds/10.png`,
+        name: "10"
+      },
+    ],
     particles: {
       URL: 'assets/images/particles.png',
       data: 'assets/images/particle_orbs.json',
@@ -172,10 +214,36 @@ const config = {
     }
   },
   soundAssets: {
-    bg: {
-      URL: "assets/sounds/bg.mp3",
-      name: 'bg'
-    },
+    bg: [
+      {
+        URL: "assets/sounds/bg/0.mp3",
+        name: '0'
+      },
+      {
+        URL: "assets/sounds/bg/1.mp3",
+        name: '1'
+      },
+      {
+        URL: "assets/sounds/bg/2.mp3",
+        name: '2'
+      },
+      {
+        URL: "assets/sounds/bg/3.mp3",
+        name: '3'
+      },
+      {
+        URL: "assets/sounds/bg/4.mp3",
+        name: '4'
+      },
+      {
+        URL: "assets/sounds/bg/5.mp3",
+        name: '5'
+      },
+      {
+        URL: "assets/sounds/bg/6.mp3",
+        name: '6'
+      }
+    ],
     fire: {
       URL: [
         "assets/sounds/fire.m4a",

@@ -125,9 +125,6 @@ export default class Network {
     
     this._room.onMessage(Message.GET_PLAYERS, (content) => {
       store.dispatch(setPlayerList(Object.entries(content?.players).map(([key, val]) => ({id: key, val}))));
-      console.log(`content`, Object.entries(content?.players).map(([key, val]) => ({id: key, val})))
-      //getting dt from server
-      // this.setDtServer2Client(content.serverTime)
     })
     // new instance added to the players MapSchema
     if (this._room.state.players)
@@ -321,7 +318,9 @@ export default class Network {
     tokenId: number,
     tier: number,
     paid: boolean,
-    team: number
+    team: number,
+    wasted: number,
+    hits: number
   ) {
     let clientTimeNow = this.clientTime();
     this._room?.send(Message.UPDATE_PLAYER,
@@ -348,7 +347,9 @@ export default class Network {
         tokenId,
         tier,
         paid,
-        team
+        team,
+        wasted,
+        hits
       })
   }
   updateBulletToServer(

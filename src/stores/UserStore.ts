@@ -15,6 +15,8 @@ export const userSlice = createSlice({
     tier: 0,
     paid: false,
     team: 0,
+    wasted: 0,
+    hits: 0,
     playerNameMap: new Map(),
     showJoystick: true //window.innerWidth < 650
   },
@@ -52,6 +54,12 @@ export const userSlice = createSlice({
     setTeam: (state, action: PayloadAction<number>) => {
       state.team = action.payload
     },
+    setWasted: (state, action: PayloadAction<number>) => {
+      state.wasted = action.payload
+    },
+    setHits: (state, action: PayloadAction<number>) => {
+      state.hits = action.payload
+    },
     setPlayerNameMap: (state, action: PayloadAction<{ id: string; name: string }>) => {
       state.playerNameMap.set(sanitizeId(action.payload.id), action.payload.name)
     },
@@ -75,6 +83,8 @@ export const {
   setShipName,
   setPaid,
   setTeam,
+  setWasted,
+  setHits,
   setTier,
   setPlayerNameMap,
   removePlayerNameMap,

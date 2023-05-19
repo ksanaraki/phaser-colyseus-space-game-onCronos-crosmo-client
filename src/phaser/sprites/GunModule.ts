@@ -16,6 +16,7 @@ class GunModule {
 	_triggered: boolean
 	_isShip: boolean
 	_isEnableSoundEffect: boolean
+	_isFired: boolean
 
 	/**
 	 * @param {Phaser.GameObjects} owner - game object that owns the module
@@ -82,9 +83,11 @@ class GunModule {
 
 export class StandardGun extends GunModule {
 	update(time, delta) {
-		super.update(time, delta)
+		super.update(time, delta);
+		this._isFired = false;
 		if (this._triggered && this.canFire()) {
-			this.fire({ pos: this._owner.getCenter(), rotation: this._owner.rotForward, speed: this._speed })			
+			this.fire({ pos: this._owner.getCenter(), rotation: this._owner.rotForward, speed: this._speed })
+			this._isFired = true;
 		}		
 	}
 

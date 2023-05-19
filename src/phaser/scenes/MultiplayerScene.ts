@@ -53,6 +53,8 @@ class MultiplayerScene extends Phaser.Scene {
 	_mySessionId:string
 	_paid: boolean
 	_team: number
+	_wasted: number
+	_hits: number
 
 	//sprite variables
 	_ships: Phaser.Physics.Arcade.Group
@@ -203,7 +205,7 @@ class MultiplayerScene extends Phaser.Scene {
 		this._enemies.runChildUpdate = true
 
 		//sets up background
-		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background.name)
+		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background[0].name)
 		this._backgroundSprite.displayWidth = Config.gamePros.screenWidth
 		this._backgroundSprite.displayHeight = Config.gamePros.screenHeight
 		this._backgroundSprite.setOrigin(0)
@@ -348,7 +350,7 @@ class MultiplayerScene extends Phaser.Scene {
 		this.time.addEvent({
 			delay: 1000,
 			callback: () => {
-				this._bgSound = this.sound.add(Config.soundAssets.bg.name)
+				this._bgSound = this.sound.add(Config.soundAssets.bg[0].name)
 			},
 		})
 	}
@@ -391,6 +393,8 @@ class MultiplayerScene extends Phaser.Scene {
 		this._shipName = data.shipPros.shipName
 		this._paid = data.shipPros.paid
 		this._team = data.shipPros.team
+		this._wasted = data.shipPros.wasted
+		this._hits = data.shipPros.hits
 
 		if (data.shipPros.hasShield) {
 			this._myShip.setShiled(this._airdropDuration)
@@ -812,6 +816,7 @@ class MultiplayerScene extends Phaser.Scene {
 			bullet.destroy()
 		asteroidOrEnemy.destroy()
 	}
+
 	getKeyByValue(map: Map<any, any>, searchValue: any) {
         for (let [key, value] of map.entries()) {
             if (value === searchValue) return key;
@@ -863,7 +868,6 @@ class MultiplayerScene extends Phaser.Scene {
 		 }
 	}
 
-
 	handleCollisionPlayerWithBullet(content:any)
 	{
 		 if (content.punished_id ===this._mySessionId){
@@ -879,6 +883,7 @@ class MultiplayerScene extends Phaser.Scene {
 			 this._myShip.Score += 5;
 		 }
 	}
+
 	handleCollisionBulletAsteroid(content: any) {
 		if (content.punisher_id === this._network._mySessionId) {
 			 this._myShip.Score += 1;
@@ -886,6 +891,7 @@ class MultiplayerScene extends Phaser.Scene {
 		if (this._isEnableSoundEffect) this._destroyedSound.play()
 		this._particles.asteroidExplode.emitParticleAt(content.asteroid_x,content.asteroid_y)	
 	}
+
 	handleCollisionPlayerWithAirdrop(content: any) {
 		console.log("collide player with airdrop", content.id,this._mySessionId,content.player_id)
 		if (this._mySessionId !== content.player_id) return;
@@ -912,6 +918,7 @@ class MultiplayerScene extends Phaser.Scene {
 		// airdrop.destroy()
 		
 	}
+	
 	//#region spawn
 	updateBulletLaunchDataToserver(x: number, y: number, rotation: number, speed: number, shooter: any,teamflag:number) {
 		let speed_x = 0;
@@ -936,6 +943,7 @@ class MultiplayerScene extends Phaser.Scene {
 		}
 		this._shot = false;
 	}
+
 	spawnRandomBullet(x: number, y: number, rotation: number, speed: number, shooter: any, own: boolean,teamflag:number) {
 		const bulletType = shooter._bulletType
 		if (own)
@@ -1387,7 +1395,7 @@ class MultiplayerScene extends Phaser.Scene {
 				},
 			})
 		} else {
-			this.registry.set('endLevel', this._level)
+			this.registry.set('endLevel', this._level);
 			this.registry.set('newEnemy', -1)
 			this._levelTimer = this.time.addEvent({
 				delay: Config.gamePros.endLevelDelay,

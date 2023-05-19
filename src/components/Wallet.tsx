@@ -77,6 +77,7 @@ const Wallet = (props) => {
   const [avatarIndex, setAvatarIndex] = useState(0)
   const [isPaid, setIsPaid] = useState<boolean>(false);
   const [playerTeam, setPlayerTeam] = useState<number>(0);
+  const [bossmode, setBossmode] = useState<boolean>(false);
   const boot = PhaserGame.scene.keys.boot as Boot;
   const multi = PhaserGame.scene.keys.multiplay as Multiplayer;
 
@@ -215,12 +216,13 @@ const Wallet = (props) => {
     store.dispatch(setPaid(isPaid))
     store.dispatch(setTeam(playerTeam))
     store.dispatch(setTier(crafts[avatarIndex].tier))
-    const shipPros = {...crafts[avatarIndex], account:account, paid: isPaid, team: playerTeam}
+    const shipPros = {...crafts[avatarIndex], account:account, paid: isPaid, team: playerTeam, wasted: 0, hits: 0}
     
     const gameProps = {
       hasCombat: hasCombat,
       difficulty: difficulty,
-      keyboard: keyboard
+      keyboard: keyboard,
+      bossMode: bossmode
     }
 
     if (shipPros.damagedLevel >= 5) {
@@ -461,10 +463,29 @@ const Wallet = (props) => {
                 </>)}
               </UpdateLevel>
               <Reward>
-                <span>Pay To Play?</span> <Checkbox defaultChecked sx={{ '& .MuiSvgIcon-root': { fontSize: 28 }, '& *': {color: `white`, borderColor: `white`} }} checked={isPaid} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                <span>Pay To Play?</span> <Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 28 }, '& *': {color: `white`, borderColor: `white`} }} checked={isPaid} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setIsPaid(event.target.checked);
                 }}/>
               </Reward>
+              {
+                !isMultiplayer && (
+                  <Reward>
+                    <span>Boss Mode?</span> 
+                    <Checkbox 
+                      sx={{ 
+                        '& .MuiSvgIcon-root': { fontSize: 28 }, 
+                        '& *': {color: `white`, borderColor: `white`} 
+                      }} 
+                      checked={bossmode} 
+                      onChange={
+                        (event: React.ChangeEvent<HTMLInputElement>) => {
+                          setBossmode(event.target.checked);
+                        }
+                      }
+                    />
+                  </Reward>
+                )
+              }
               <Join onClick={handleJoin}>
                 PLAY
               </Join>

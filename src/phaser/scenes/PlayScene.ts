@@ -50,6 +50,8 @@ class PlayScene extends Phaser.Scene {
 	_shipName: string
 	_paid: boolean
 	_team: number
+	_wasted: number
+	_hits: number
 
 	//sprite variables
 	_ships: Phaser.Physics.Arcade.Group
@@ -115,6 +117,11 @@ class PlayScene extends Phaser.Scene {
 	_gameStarted: boolean
 	_shipPros: any
 
+	_backImg: string
+	_backBg: string
+
+	_bossMode: boolean
+
 	//#region init	
 	init() {
 		// set game config variable data
@@ -178,10 +185,12 @@ class PlayScene extends Phaser.Scene {
 		this._enemies.runChildUpdate = true
 
 		//sets up background
-		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background.name)
+		this._backImg = Config.graphicAssets.background[0].name;
+		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background[0].name)
 		this._backgroundSprite.displayWidth = Config.gamePros.screenWidth
 		this._backgroundSprite.displayHeight = Config.gamePros.screenHeight
-		this._backgroundSprite.setOrigin(0)
+		this._backgroundSprite.setOrigin(0);
+		this._backgroundSprite.setScale(1.2);
 
 		this.initWorldBounds()
 
@@ -310,7 +319,9 @@ class PlayScene extends Phaser.Scene {
 		this.time.addEvent({
 			delay: 1000,
 			callback: () => {
-				this._bgSound = this.sound.add(Config.soundAssets.bg.name)
+				this._backBg = Config.soundAssets.bg[0].name;
+				this._bgSound = this.sound.add(Config.soundAssets.bg[0].name);
+				this._bgSound.setLoop(true);
 			},
 		})
 	}
@@ -333,6 +344,8 @@ class PlayScene extends Phaser.Scene {
 		this._tokenId = data.shipPros.tokenID
 		this._paid = data.shipPros.paid
 		this._team = data.shipPros.team
+		this._wasted = data.shipPros.wasted
+		this._hits = data.shipPros.hits
 
 		if (data.shipPros.hasShield) {
 			this._myShip.setShiled(this._airdropDuration)
@@ -349,6 +362,8 @@ class PlayScene extends Phaser.Scene {
 		this._increaseEnemies += DIFFICULTY[data.gameProps.difficulty].INCREASE_ENEMIES
 		this._minEnemySpeed *= DIFFICULTY[data.gameProps.difficulty].MIN_ENEMY_SPEED
 		this._maxEnemySpeed *= DIFFICULTY[data.gameProps.difficulty].MAX_ENEMY_SPEED
+
+		this._bossMode = data?.gameProps?.bossMode || false;
 
 		this.input.keyboard.on(`keyup-${data.gameProps.keyboard.sounds}`, () => {
 			this._isEnableSoundEffect = !this._isEnableSoundEffect
@@ -442,6 +457,10 @@ class PlayScene extends Phaser.Scene {
 	}
 
 	bulletEnemyCollision(bullet: any, asteroidOrEnemy: any) {
+		if (bullet._bulletKind !== 'atomic') {
+			this._myShip._hits += 1;
+			this._myShip.setAccuracy();
+		}
 		if (bullet._bulletKind === 'normal' && bullet._owner._bulletType === BULLET_TYPE.EXPLOSIVE_BULLET) {
 			bullet.destroy()
 			this.spawnRegionBullet(asteroidOrEnemy.x, asteroidOrEnemy.y, bullet._owner, 'explosive')
@@ -457,7 +476,7 @@ class PlayScene extends Phaser.Scene {
 				return
 			}
 			bullet._owner.Score += 1;
-			if(this._network) {
+			if(this._network && bullet._bulletKind !== 'atomic') {
 				this._network.recordScore(
 					bullet._owner._account,
 					bullet._owner._tokenId,
@@ -469,6 +488,7 @@ class PlayScene extends Phaser.Scene {
 			this.spawnRandomAirdrop(asteroidOrEnemy, bullet._owner, this._airdropPercentAsteroid)
 			this.splitAsteroid(asteroidOrEnemy)
 		}
+
 		if (asteroidOrEnemy._group === 'enemy' || asteroidOrEnemy._group === 'boss') {
 			if (asteroidOrEnemy._group === 'enemy' && asteroidOrEnemy._lives === 2) {
 				asteroidOrEnemy._lives--
@@ -499,6 +519,7 @@ class PlayScene extends Phaser.Scene {
 			// 	.filter((enemy) => (enemy._group === 'enemyBullet'))
 			// 	.map((enemy) => (enemy.destroy()))
 		}
+
 		this._particles.asteroidExplode.emitParticleAt(asteroidOrEnemy.x, asteroidOrEnemy.y)
 		if (this._isEnableSoundEffect) this._destroyedSound.play()
 
@@ -892,29 +913,41 @@ class PlayScene extends Phaser.Scene {
 		this._level++
 		this.registry.set('level', this._level)
 
-		if (!(this._level === 7 || (this._level >= 8 && this._level % 4 === 0))) this.nextAsteroids()
+		if (!this._bossMode && !(this._level === 7 || (this._level >= 8 && this._level % 4 === 0))) this.nextAsteroids()
 
 		// normal enemies can be appeared from level 3, they need to be disappear on level 8, 12, 16 ...  // darkhorse 3, 8, 4
-		if (this._level >= 3 && !(this._level >= 8 && this._level % 4 === 0)) {
+		if (!this._bossMode && this._level >= 3 && !(this._level >= 8 && this._level % 4 === 0)) {
 			this._startingEnemies += this._increaseEnemies
 			let enemyType = this._level >= 5 ? ENEMY_TYPE.NORMAL_BOTH : ENEMY_TYPE.NORMAL_FIRST
 			this.nextEnemies(this._startingEnemies, enemyType, this._enemyLives)
 		}
 
-		// first boss enemies can be appeared on level 8, 12, 16 ...  // darkhorse 8, 4
-		if (this._level >= 8 && this._level % 4 === 0) {
-			if (this._level !== 12) this._startingBoss += this._increaseBoss
-			let randVal = randRange(0, 1)
-			let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_FIRST : ENEMY_TYPE.BOSS_SECOND
-			this.nextEnemies(this._startingBoss, enemyType, this._bossLives)
-		}
-
-		// second boss enemies can be appeared on level 12, 16, 20...  // darkhorse 12, 4
-		if (this._level >= 12 && this._level % 4 === 0) {
-			let randVal = randRange(0, 1)
-			let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH
+		if(this._bossMode) {
+			this._startingBoss += this._increaseBoss;
+			let randVal = randRange(0, 1);
+			let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_FIRST : ENEMY_TYPE.BOSS_SECOND;
+			this.nextEnemies(Math.ceil(this._startingBoss / 2), enemyType, this._bossLives);
+			randVal = randRange(0, 1)
+			enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH
 			this._bossLives += 5
-			this.nextEnemies(this._startingBoss, enemyType, this._bossLives)
+			this.nextEnemies(Math.floor(this._startingBoss / 2), enemyType, this._bossLives)
+		}
+		else {
+			// first boss enemies can be appeared on level 8, 12, 16 ...  // darkhorse 8
+			if (this._level >= 8 && this._level % 4 === 0) {
+				if (this._level !== 12) this._startingBoss += this._increaseBoss
+				let randVal = randRange(0, 1)
+				let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_FIRST : ENEMY_TYPE.BOSS_SECOND
+				this.nextEnemies(this._startingBoss, enemyType, this._bossLives)
+			}
+
+			// second boss enemies can be appeared on level 12, 16, 20...  // darkhorse 12, 4
+			if (this._level >= 12 && this._level % 4 === 0) {
+				let randVal = randRange(0, 1)
+				let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH
+				this._bossLives += 5
+				this.nextEnemies(this._startingBoss, enemyType, this._bossLives)
+			}
 		}
 	}
 
@@ -945,6 +978,7 @@ class PlayScene extends Phaser.Scene {
 				},
 			})
 		} else {
+			this.changeEnvPerLevel();
 			this.registry.set('endLevel', this._level)
 			this.registry.set('newEnemy', -1)
 			this._levelTimer = this.time.addEvent({
@@ -975,6 +1009,26 @@ class PlayScene extends Phaser.Scene {
 				this._myShip._hasAtomic = false
 				store.dispatch(setHasAtomic(false))
 			}
+		}
+	}
+
+	changeEnvPerLevel() {
+		const bgImageRes = this._level % Config.graphicAssets.background.length;
+		const bgMusicRes = this._level % Config.soundAssets.bg.length;
+
+		if((`${bgImageRes}` != this._backImg) && this._backgroundSprite) {
+			this._backImg = `${bgImageRes}`;
+			//sets up background
+			this._backgroundSprite.setTexture(Config.graphicAssets.background[bgImageRes].name);
+		}
+
+		if((`${bgMusicRes}` != this._backBg) && this._bgSound) {
+			this._bgSound.stop();
+			this._bgSound.destroy();
+			this._backBg = `${bgMusicRes}`;
+			this._bgSound = this.sound.add(Config.soundAssets.bg[bgMusicRes].name);
+			this._bgSound.setLoop(true);
+			this._bgSound.play();
 		}
 	}
 }

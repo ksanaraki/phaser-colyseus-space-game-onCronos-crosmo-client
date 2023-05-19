@@ -10,6 +10,8 @@ class TextScene extends Phaser.Scene {
     _levelText: any
     _shotLabel: any
     _shotText: any
+    _accLabel: any
+    _accText: any
     _endLevel: any
     _newEnemy: any
 
@@ -36,13 +38,20 @@ class TextScene extends Phaser.Scene {
         this._endLevel.setOrigin(0.5)
         this._newEnemy = this.add.text(this._width / 2, this._height / 2 - 50, "", Config.fontAssets.endLevel)
         this._newEnemy.setOrigin(0.5)
+
         this._scoreLabel = this.add.text(16, 16, "Score:", Config.fontAssets.scoreLabel)
         this._scoreText = this.add.text(135, 16, "0", Config.fontAssets.scoreText)
+
         this._levelLabel = this.add.text(16, 50, "Level:", Config.fontAssets.levelLabel)
         this._levelText = this.add.text(85, 50, data.level, Config.fontAssets.levelText)
+
         this._shotLabel = this.add.text(this._width - 155, this._height - 45, "Shots:", Config.fontAssets.scoreLabel)
         this._shotText = this.add.text(this._width - 16, this._height - 16, this.registry.values.shots, Config.fontAssets.scoreText)
         this._shotText.setOrigin(1, 1)
+
+        this._accLabel = this.add.text(this._width - 155, this._height - 66, "Acc:", Config.fontAssets.levelLabel)
+        this._accText = this.add.text(this._width - 32, this._height - 48, `${this.registry.values.accuracy || 0} %`, Config.fontAssets.levelText)
+        this._accText.setOrigin(1, 1)
 
         this.setLives()
 
@@ -62,6 +71,8 @@ class TextScene extends Phaser.Scene {
         } else if (key === "shots") {
             if (data > 90) this._shotText.setText('∞')
             else this._shotText.setText(data)
+        } else if (key === "accuracy") {
+            this._accText.setText(`${data} %`)
         } else if (key === "endLevel") {
             if (data === -1) this._endLevel.setText("")
             else if (data === 0) this._endLevel.setText(`Enjoy The Game!`)

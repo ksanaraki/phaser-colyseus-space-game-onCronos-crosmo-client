@@ -65,9 +65,9 @@ const GameUI = ({ specialKey }) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const bulletPercentVal = bulletCount / bulletDuration * 100
-      setBulletPercent(bulletPercentVal);
+      setBulletPercent(70);
       if (bulletCount <= 0) {
-        setBulletPercent(0)
+        setBulletPercent(70)
         clearInterval(timer)
       }
       bulletCount -= 0.25
@@ -80,9 +80,9 @@ const GameUI = ({ specialKey }) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const shieldPercent = shieldCount / shieldDuration * 100
-      setShieldPercent(shieldPercent)
+      setShieldPercent(70)
       if (shieldCount <= 0) {
-        setShieldPercent(0)
+        setShieldPercent(70)
         clearInterval(timer)
       }
       shieldCount -= 0.25
@@ -99,11 +99,11 @@ const GameUI = ({ specialKey }) => {
         position: `fixed`,
         justifyContent: 'flex-end',
         right: {
-          xs: `-110px`,
-          sm: `-110px`,
-          md: `-240px`,
-          lg: `-280px`,
-          xl: `-370px`
+          xs: `-100px`,
+          sm: `-100px`,
+          md: `-220px`,
+          lg: `-260px`,
+          xl: `-340px`
         }
       }}>
         {shieldPercent != 0 && <Box sx={{
@@ -111,11 +111,11 @@ const GameUI = ({ specialKey }) => {
         }}>
           <Box sx={{
             width: {
-              xs: `270px`,
-              sm: `270px`,
-              md: `560px`,
-              lg: `640px`,
-              xl: `820px`
+              xs: `256px`,
+              sm: `256px`,
+              md: `500px`,
+              lg: `580px`,
+              xl: `760px`
             },
             transform: 'rotate(-90deg)',
           }}>
@@ -125,11 +125,11 @@ const GameUI = ({ specialKey }) => {
             fontSize: '18px',
             color: '#24c2bc',
             paddingTop: {
-              xs: `130px`,
-              sm: `130px`,
-              md: `280px`,
-              lg: `320px`,
-              xl: `410px`
+              xs: `128px`,
+              sm: `128px`,
+              md: `250px`,
+              lg: `290px`,
+              xl: `380px`
             }
           }}>
             SHIELD
@@ -142,11 +142,11 @@ const GameUI = ({ specialKey }) => {
         position: `fixed`,
         justifyContent: 'flex-end',
         right: {
-          xs: shieldPercent == 0 ? `-110px` : `-50px`,
-          sm: shieldPercent == 0 ? `-110px` : `-50px`,
-          md: shieldPercent == 0 ? `-240px` : `-190px`,
-          lg: shieldPercent == 0 ? `-280px` : `-220px`,
-          xl: shieldPercent == 0 ? `-370px` : `-310px`
+          xs: shieldPercent == 0 ? `-110px` : `-40px`,
+          sm: shieldPercent == 0 ? `-110px` : `-40px`,
+          md: shieldPercent == 0 ? `-240px` : `-175px`,
+          lg: shieldPercent == 0 ? `-280px` : `-205px`,
+          xl: shieldPercent == 0 ? `-370px` : `-300px`
         }
       }}>
         {bulletPercent != 0 && <Box sx={{
@@ -154,11 +154,11 @@ const GameUI = ({ specialKey }) => {
         }}>
           <Box sx={{
             width: {
-              xs: `270px`,
-              sm: `270px`,
-              md: `560px`,
-              lg: `640px`,
-              xl: `820px`
+              xs: `256px`,
+              sm: `256px`,
+              md: `500px`,
+              lg: `580px`,
+              xl: `760px`
             },
             transform: 'rotate(-90deg)',
           }}>
@@ -167,11 +167,11 @@ const GameUI = ({ specialKey }) => {
           <Box 
             sx={{
               paddingTop: {
-                xs: `130px`,
-                sm: `130px`,
-                md: `280px`,
-                lg: `320px`,
-                xl: `410px`
+                xs: `128px`,
+                sm: `128px`,
+                md: `250px`,
+                lg: `290px`,
+                xl: `380px`
               }
             }}
           >

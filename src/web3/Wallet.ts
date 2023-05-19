@@ -29,7 +29,7 @@ export async function initWallet() {
     craftContract = new web3Modal.eth.Contract(craftAbi, craftContractAddr)
     await updateAccount()
   } catch (e) {
-    console.log("wallet connect error, reconnecting")
+    console.log("wallet connect error, reconnecting", e)
   }
 }
 

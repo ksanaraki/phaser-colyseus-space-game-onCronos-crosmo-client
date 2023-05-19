@@ -73,8 +73,6 @@ export const connectAccount = async (firstRun = false, type = "") => {
       providerOptions, // required
     });
 
-    console.log(`web3Modal`, web3Modal);
-
     const web3provider = await web3Modal
       .connect()
       .then((web3provider) => web3provider)
@@ -82,8 +80,6 @@ export const connectAccount = async (firstRun = false, type = "") => {
         console.log("Could not get a wallet connection", error);
         return null;
       });
-
-    console.log('web3provider:',web3provider)
 
     if (!web3provider) {
       walletDisconnect();
@@ -93,21 +89,15 @@ export const connectAccount = async (firstRun = false, type = "") => {
     try {
       store.dispatch(setWalletConnecting(true));
       const provider = new ethers.providers.Web3Provider(web3provider);
-      console.log(`provider`, provider);
       const cid = await web3provider.request({
         method: "net_version",
       });
-      console.log("cid: ", cid);
 
       const accounts = await web3provider.request({
         method: "eth_accounts",
         params: [{ chainId: cid }],
       });
-      console.log("accounts: ", accounts);
-      console.log(`web3provider.isMetaMask`, web3provider.isMetaMask);
       const address = accounts[0];
-
-      console.log(`web3provider.chainId`, web3provider.chainId);
 
       web3provider.on("DeFiConnectorDeactivate", (error) => {
         walletDisconnect()
