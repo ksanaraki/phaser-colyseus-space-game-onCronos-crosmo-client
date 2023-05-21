@@ -14,12 +14,22 @@ import {
   ButtonWallet
 } from '../styles/Header';
 
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const Header = ({ account, setWallet, setBg }) => {
 
   const walletConnecting = useAppSelector((state) => state.wallet.walletConnecting);
 
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const now = new Date()
+    const cookie = JSON.parse(localStorage.getItem('wallet-connected'))
+    const walletConnected = cookie?.walletConnected
+    const expiry = cookie?.expiry
+    const walletType = localStorage.getItem('wallet-type');
+    // if (walletConnected === 'true' && expiry > now.getTime()) connectAccount()
+  }, [])
 
   const connectWallet = () => {
     !account && setOpen(true)
@@ -38,7 +48,9 @@ const Header = ({ account, setWallet, setBg }) => {
     }
     else {
       if(!walletConnecting) {
-        const w = walletDisconnect();
+        walletDisconnect();
+        await delay(100);
+        window.location.reload();
       }
       else {
         return;

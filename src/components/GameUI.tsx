@@ -121,7 +121,7 @@ const GameUI = ({ specialKey }) => {
           }}>
             <ShieldLinearProgress variant="determinate" value={shieldPercent} />
           </Box>
-          <Typography sx={{
+          {/* <Typography sx={{
             fontSize: '18px',
             color: '#24c2bc',
             paddingTop: {
@@ -133,7 +133,7 @@ const GameUI = ({ specialKey }) => {
             }
           }}>
             SHIELD
-          </Typography>
+          </Typography> */}
         </Box>}
       </Box>
 
@@ -164,7 +164,7 @@ const GameUI = ({ specialKey }) => {
           }}>
             <BulletLinearProgress variant="determinate" value={bulletPercent} />
           </Box>
-          <Box 
+          {/* <Box 
             sx={{
               paddingTop: {
                 xs: `128px`,
@@ -176,7 +176,7 @@ const GameUI = ({ specialKey }) => {
             }}
           >
             <img src={`assets/images/icon_ATOMIC_BULLET.png`} alt="airdrop icon" />
-          </Box>
+          </Box> */}
         </Box>}
       </Box>
 

@@ -334,9 +334,9 @@ const config = {
     },
   },
   asteroidPros: {
-    startingAsteroids: 3,
-    maxAsteroids: 12,
-    incrementAsteroids: 2,
+    startingAsteroids: 1,
+    maxAsteroids: 10,
+    incrementAsteroids: 1,
     minSpeed: 60,
     maxSpeed: 60
   },

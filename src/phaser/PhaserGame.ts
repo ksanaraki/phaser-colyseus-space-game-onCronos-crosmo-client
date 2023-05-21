@@ -26,8 +26,14 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     parent: 'phaser-example',
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 1600,
-    height: 900
+    width: window.innerWidth < 1366 ? window.innerWidth * window.devicePixelRatio : 1920,
+    height: window.innerWidth < 768 ? window.innerHeight * window.devicePixelRatio : 1080,
+  },
+  fps: {
+    // Defaults:
+    deltaHistory: 10,
+    panicMax: 120,
+    smoothStep: true
   },
   physics: {
     default: 'arcade',

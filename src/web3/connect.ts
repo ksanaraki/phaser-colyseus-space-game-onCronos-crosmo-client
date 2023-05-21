@@ -37,6 +37,14 @@ export const switchNetwork = async () => {
   }
 }
 
+export const connectAuto = async () => {
+  let chainId = await window.ethereum.request({ method: "eth_chainId" })
+  if (!(chainId === config.configVars.mainnet.chainIdHex)) {
+    await switchNetwork()
+    await delay(2000)
+  }
+}
+
 export const connectAccount = async (firstRun = false, type = "") => {
     let chainId = await window.ethereum.request({ method: "eth_chainId" })
     if (!(chainId === config.configVars.mainnet.chainIdHex)) {
@@ -69,7 +77,8 @@ export const connectAccount = async (firstRun = false, type = "") => {
     };
 
     const web3Modal = new Web3Modal({
-      // cacheProvider: true, // optional
+      cacheProvider: false,
+      disableInjectedProvider: false,
       providerOptions, // required
     });
 
@@ -82,6 +91,7 @@ export const connectAccount = async (firstRun = false, type = "") => {
       });
 
     if (!web3provider) {
+      console.log(`web3provider`);
       walletDisconnect();
       return null;
     }
@@ -100,18 +110,23 @@ export const connectAccount = async (firstRun = false, type = "") => {
       const address = accounts[0];
 
       web3provider.on("DeFiConnectorDeactivate", (error) => {
+        console.log(`DeFiConnectorDeactivate`)
         walletDisconnect()
       });
 
       web3provider.on("disconnect", (error) => {
+        console.log(`disconnect`)
         walletDisconnect()
       });
 
       web3provider.on("accountsChanged", (accounts) => {
+        console.log(`accountsChanged`)
         walletDisconnect()
       });
 
       web3provider.on("DeFiConnectorUpdate", (accounts) => {
+        console.log(`DeFiConnectorUpdate`)
+        setLocalStorageWallet(false);
         window.location.reload();
       });
 
@@ -119,14 +134,17 @@ export const connectAccount = async (firstRun = false, type = "") => {
         // Handle the new chain.
         // Correctly handling chain changes can be complicated.
         // We recommend reloading the page unless you have good reason not to.
-
+        console.log(`chainChanged`)
+        setLocalStorageWallet(false);
         window.location.reload();
       });
 
       store.dispatch(setWalletConnecting(false));
+      setLocalStorageWallet(true);
+      localStorage.setItem('wallet-type', web3provider.isMetaMask ? `metamask` : `walletconnect`)
       return {
         walletProviderName: web3provider.isMetaMask ? `metamask` : `walletconnect`,
-        address: address,
+        address: address,           
         browserWeb3Provider: provider,
         serverWeb3Provider: new ethers.providers.JsonRpcProvider(
           config.configVars.mainnet.rpcUrl
@@ -150,4 +168,14 @@ export const walletDisconnect = () => {
   });
   web3Modal.clearCachedProvider();
   store.dispatch(setWalletConnecting(false));
+  setLocalStorageWallet(false);
 };
+
+const setLocalStorageWallet = (connected: boolean) => {
+  const now = new Date()
+  const item = {
+    walletConnected: connected ? `true` : `false`,
+    expiry: connected ?now.getTime() + (1000 * 3600 * 1) : now.getTime()
+  }
+  localStorage.setItem('wallet-connected', JSON.stringify(item))
+}

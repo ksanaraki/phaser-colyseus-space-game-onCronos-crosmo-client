@@ -41,6 +41,8 @@ class PlayScene extends Phaser.Scene {
 		super('play')
 	}
 
+	private backgroundImg: Phaser.GameObjects.Image
+
 	//#region local variables
 	_network!: Network
 	_myShip: any
@@ -64,7 +66,8 @@ class PlayScene extends Phaser.Scene {
 	_worldBounds: any
 
 	//assets variables
-	_backgroundSprite: any
+	_backgroundSprite: Phaser.GameObjects.Sprite
+	fadeCamera: any
 	_particles: any
 	_destroyedSound: any
 	_fireSound: any
@@ -104,7 +107,10 @@ class PlayScene extends Phaser.Scene {
 	_height: number
 	_center: { x: number, y: number }
 	_level: number
+	_levelBoss: number
 	_levelTimer: any
+	_randomTimer: any
+	_nextLevelTimer: any
 	_readyNewLevel: boolean
 	_passedIntro: boolean
 	_specialKey: string
@@ -132,6 +138,7 @@ class PlayScene extends Phaser.Scene {
 		this._height = Config.gamePros.screenHeight
 		this._center = { x: this._width / 2, y: this._height / 2 }
 		this._level = 0
+		this._levelBoss = 1
 		this._readyNewLevel = false
 		this._passedIntro = false
 		this._isEnableSoundEffect = true
@@ -196,7 +203,7 @@ class PlayScene extends Phaser.Scene {
 		this._backgroundSprite.displayWidth = Config.gamePros.screenWidth
 		this._backgroundSprite.displayHeight = Config.gamePros.screenHeight
 		this._backgroundSprite.setOrigin(0);
-		this._backgroundSprite.setScale(1.2);
+		this._backgroundSprite.setScale(window.innerWidth < 1366 ? 1.2 : 1.5);
 
 		this.initWorldBounds()
 
@@ -882,7 +889,8 @@ class PlayScene extends Phaser.Scene {
 	}
 
 	nextAsteroids() {
-		this._startingAsteroids = Math.min((this._startingAsteroids + this._incrementAsteroids), this._maxAsteroids)
+		const inc = this._level % 2 == 0 ? 0 : this._incrementAsteroids;
+		this._startingAsteroids = Math.min((this._startingAsteroids + inc), this._maxAsteroids)
 		for (let i = 0; i < this._startingAsteroids; i++) {
 			// second enemies can be appeared from 2 levels
 			const type = this._level === 1 ? ASTEROID_TYPE.FIRST : randRange(0, 1) >= 0.5 ? ASTEROID_TYPE.FIRST : ASTEROID_TYPE.SECOND
@@ -919,40 +927,71 @@ class PlayScene extends Phaser.Scene {
 		this._level++
 		this.registry.set('level', this._level)
 
-		if (!this._bossMode && !(this._level === 7 || (this._level >= 8 && this._level % 4 === 0))) this.nextAsteroids()
+		if (!this._bossMode && !((this._level >= 8 && this._level % 4 === 0))) this.nextAsteroids()
 
 		// normal enemies can be appeared from level 3, they need to be disappear on level 8, 12, 16 ...  // darkhorse 3, 8, 4
 		if (!this._bossMode && this._level >= 3 && !(this._level >= 8 && this._level % 4 === 0)) {
-			this._startingEnemies += this._increaseEnemies
+			const inc = this._level % 2 != 0 ? 0 : this._increaseEnemies;
+			this._startingEnemies += inc;
 			let enemyType = this._level >= 5 ? ENEMY_TYPE.NORMAL_BOTH : ENEMY_TYPE.NORMAL_FIRST
 			this.nextEnemies(this._startingEnemies, enemyType, this._enemyLives)
 		}
 
 		if(this._bossMode) {
-			this._startingBoss += this._increaseBoss;
+			this._startingBoss = Math.ceil(this._level / 2);
 			let randVal = randRange(0, 1);
 			let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_FIRST : ENEMY_TYPE.BOSS_SECOND;
-			this.nextEnemies(Math.ceil(this._startingBoss / 2), enemyType, this._bossLives);
+
+			const reduceWeak = this._startingBoss % 2 == 0 ? -1 : 0;
+			const addStrong = this._startingBoss % 2 == 0 ? 1 : 0;
+
+			if(this._level % 2 == 0) {
+				this.nextEnemies(Math.floor(this._startingBoss / 2) + reduceWeak, enemyType, this._bossLives);
+			}
+			else {
+				this.nextEnemies(Math.ceil(this._startingBoss / 2), enemyType, this._bossLives);
+			}
+
 			randVal = randRange(0, 1)
-			enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH
-			this._bossLives += 5
-			this.nextEnemies(Math.floor(this._startingBoss / 2), enemyType, this._bossLives)
+			enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH;
+
+			if(this._level % 2 == 0) {
+				this._bossLives += 1;
+				this.nextEnemies(Math.ceil(this._startingBoss / 2) + addStrong, enemyType, this._bossLives);
+			}
+			else {
+				this.nextEnemies(Math.floor(this._startingBoss / 2), enemyType, this._bossLives);
+			}
 		}
 		else {
 			// first boss enemies can be appeared on level 8, 12, 16 ...  // darkhorse 8
 			if (this._level >= 8 && this._level % 4 === 0) {
-				if (this._level !== 12) this._startingBoss += this._increaseBoss
-				let randVal = randRange(0, 1)
-				let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_FIRST : ENEMY_TYPE.BOSS_SECOND
-				this.nextEnemies(this._startingBoss, enemyType, this._bossLives)
-			}
+				this._startingBoss = Math.ceil(this._levelBoss / 2);
+				let randVal = randRange(0, 1);
+				let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_FIRST : ENEMY_TYPE.BOSS_SECOND;
+	
+				const reduceWeak = this._startingBoss % 2 == 0 ? -1 : 0;
+				const addStrong = this._startingBoss % 2 == 0 ? 1 : 0;
+	
+				if(this._levelBoss % 2 == 0) {
+					this.nextEnemies(Math.floor(this._startingBoss / 2) + reduceWeak, enemyType, this._bossLives);
+				}
+				else {
+					this.nextEnemies(Math.ceil(this._startingBoss / 2), enemyType, this._bossLives);
+				}
+	
+				randVal = randRange(0, 1)
+				enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH;
+	
+				if(this._levelBoss % 2 == 0) {
+					this._bossLives += 1;
+					this.nextEnemies(Math.ceil(this._startingBoss / 2) + addStrong, enemyType, this._bossLives);
+				}
+				else {
+					this.nextEnemies(Math.floor(this._startingBoss / 2), enemyType, this._bossLives);
+				}
 
-			// second boss enemies can be appeared on level 12, 16, 20...  // darkhorse 12, 4
-			if (this._level >= 12 && this._level % 4 === 0) {
-				let randVal = randRange(0, 1)
-				let enemyType = randVal > 0.5 ? ENEMY_TYPE.BOSS_THIRD : ENEMY_TYPE.BOSS_FOURTH
-				this._bossLives += 5
-				this.nextEnemies(this._startingBoss, enemyType, this._bossLives)
+				this._levelBoss += 1;
 			}
 		}
 	}
@@ -984,13 +1023,12 @@ class PlayScene extends Phaser.Scene {
 				},
 			})
 		} else {
-			this.changeEnvPerLevel();
 			this.registry.set('endLevel', this._level)
 			this.registry.set('newEnemy', -1)
 			this._levelTimer = this.time.addEvent({
 				delay: Config.gamePros.endLevelDelay,
 				callback: () => {
-					this._readyNewLevel = true
+					this._readyNewLevel = true;
 					this.registry.set('endLevel', -1)
 				},
 			})
@@ -1019,13 +1057,24 @@ class PlayScene extends Phaser.Scene {
 	}
 
 	changeEnvPerLevel() {
+		console.log(`changed`);
 		const bgImageRes = (this._level + this._firstBackImgRandom) % Config.graphicAssets.background.length;
 		const bgMusicRes = (this._level + this._firstBgRandom) % Config.soundAssets.bg.length;
 
 		if((`${bgImageRes}` != this._backImg) && this._backgroundSprite && this._level != 0) {
-			this._backImg = `${bgImageRes}`;
-			//sets up background
-			this._backgroundSprite.setTexture(Config.graphicAssets.background[bgImageRes].name);
+			this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+				camera.fadeIn(500);
+			}, this);
+			this.cameras.main.fadeOut(500);
+			this.time.removeEvent(this._randomTimer)
+			this._randomTimer = this.time.addEvent({
+				delay: 500,
+				callback: () => {
+					this._backImg = `${bgImageRes}`;
+					//sets up background
+					this._backgroundSprite.setTexture(Config.graphicAssets.background[bgImageRes].name);
+				},
+			})
 		}
 
 		if((`${bgMusicRes}` != this._backBg) && this._bgSound &&  this._level != 0) {
