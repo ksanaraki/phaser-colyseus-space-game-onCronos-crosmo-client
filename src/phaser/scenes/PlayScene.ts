@@ -1048,7 +1048,7 @@ class PlayScene extends Phaser.Scene {
 		if (this._myShip && this._network) this._myShip.updateToServer(this._network);
 
 		if (this.input.keyboard.addKey(this._specialKey).isDown) {
-			if (!this._myShip._hasAtomic) {
+			if (this._myShip._hasAtomic) {
 				this.spawnRegionBullet(this._center.x, this._center.y, this, 'atomic')
 				this._myShip._hasAtomic = false
 				store.dispatch(setHasAtomic(false))
