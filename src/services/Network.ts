@@ -30,10 +30,6 @@ export default class Network {
   _mySessionId!: string
   _dtServer2Client:number
   constructor() {
-    //const endpoint = `wss://crosmoshooter-backend-multi.onrender.com`
-    //const protocol = window.location.protocol.replace('http', 'ws')
-    //const endpoint =  `${protocol}//${window.location.hostname}:2083`
-    // const endpoint='ws://3.224.34.61:2083'
     const endpoint = process.env.REACT_APP_SERVER_ENDPOINT;
     
     console.log("connect to ", endpoint, " at : ", new Date().getTime());
