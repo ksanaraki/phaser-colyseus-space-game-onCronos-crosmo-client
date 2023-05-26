@@ -46,12 +46,6 @@ export const connectAuto = async () => {
 }
 
 export const connectAccount = async (firstRun = false, type = "") => {
-    let chainId = await window.ethereum.request({ method: "eth_chainId" })
-    if (!(chainId === config.configVars.mainnet.chainIdHex)) {
-      await switchNetwork()
-      await delay(2000)
-    }
-
     let providerOptions: any = {
       injected: {
         display: {
