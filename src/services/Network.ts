@@ -33,12 +33,12 @@ export default class Network {
     const endpoint = process.env.REACT_APP_SERVER_ENDPOINT;
     
     console.log("connect to ", endpoint, " at : ", new Date().getTime());
-    this._client = new Client(endpoint)
+    // this._client = new Client(endpoint)
     
-    this.joinLobbyRoom().then(() => {
-      console.log("success connect  at : ", new Date().getTime());
-      store.dispatch(setLobbyJoined(true))
-    })
+    // this.joinLobbyRoom().then(() => {
+    //   console.log("success connect  at : ", new Date().getTime());
+    //   store.dispatch(setLobbyJoined(true))
+    // })
 
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)

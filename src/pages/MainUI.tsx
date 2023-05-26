@@ -159,7 +159,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       const scoreRes = await api.score.getScores(period, league)
       setScores(scoreRes.data)
     }
-    init()
+    // init()
   }, [period, league])
 
 

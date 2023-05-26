@@ -199,15 +199,15 @@ const Wallet = (props) => {
       return;
     }}
 
-    const res = await api.auth.login(account)
-    if (res.error) {
-      setSeverity('error')
-      setNoticeMsg(res.error)
-      setShowNotice(true)
-      setCalculating(false)
-      return;
-    }
-    localStorage.setItem('jwt', JSON.stringify(res))
+    // const res = await api.auth.login(account)
+    // if (res.error) {
+    //   setSeverity('error')
+    //   setNoticeMsg(res.error)
+    //   setShowNotice(true)
+    //   setCalculating(false)
+    //   return;
+    // }
+    // localStorage.setItem('jwt', JSON.stringify(res))
    
     store.dispatch(setTokenId(crafts[avatarIndex].tokenId))
     store.dispatch(setShipName(crafts[avatarIndex].name))
@@ -241,14 +241,9 @@ const Wallet = (props) => {
       }
       else {
         if (lobbyJoined) {
-          boot._network
-          .joinOrCreatePublic()
-          .then(() => {
-            setIsGamePlaying(true)
-            setBg('');
-            boot.startGame(shipPros, gameProps)
-          })
-          .catch((error) => console.error('error in joinOrCreatePublic', error))
+          setIsGamePlaying(true)
+          setBg('');
+          boot.startGame(shipPros, gameProps)
         } else {
           setSeverity('error')
           setNoticeMsg('Trying to connect to server, please try again!')

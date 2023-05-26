@@ -18,7 +18,7 @@ const isCustomRoom = (room: RoomInterface) => {
 export const roomSlice = createSlice({
   name: 'room',
   initialState: {
-    lobbyJoined: false,
+    lobbyJoined: true,
     roomJoined: false,
     roomId: '',
     roomData: undefined,
