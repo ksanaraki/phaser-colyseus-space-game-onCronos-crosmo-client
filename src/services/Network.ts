@@ -30,15 +30,19 @@ export default class Network {
   _mySessionId!: string
   _dtServer2Client:number
   constructor() {
+    //const endpoint = `wss://crosmoshooter-backend-multi.onrender.com`
+    //const protocol = window.location.protocol.replace('http', 'ws')
+    //const endpoint =  `${protocol}//${window.location.hostname}:2083`
+    // const endpoint='ws://3.224.34.61:2083'
     const endpoint = process.env.REACT_APP_SERVER_ENDPOINT;
     
     console.log("connect to ", endpoint, " at : ", new Date().getTime());
-    // this._client = new Client(endpoint)
+    this._client = new Client(endpoint)
     
-    // this.joinLobbyRoom().then(() => {
-    //   console.log("success connect  at : ", new Date().getTime());
-    //   store.dispatch(setLobbyJoined(true))
-    // })
+    this.joinLobbyRoom().then(() => {
+      console.log("success connect  at : ", new Date().getTime());
+      store.dispatch(setLobbyJoined(true))
+    })
 
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
@@ -422,7 +426,7 @@ export default class Network {
 
 
   //method to record user score to the DB when score was changed
-  async recordScore (account: string, tokenId: number, shipName: string, tier: number,  score: number) {
+  async recordScore (account: string = ``, tokenId: number = 0, shipName: string = ``, tier: number = 0,  score: number = 0) {
     try{
       const res = await api.score.saveScoreLog(account, tokenId.toString(), shipName, tier, score);
     }

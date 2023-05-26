@@ -26,7 +26,7 @@ import { setCurRoom } from 'stores/RoomStore';
 import store from 'stores';
 
 const getMaxTeamPlayerNumber = (mode: RoomMode): number => {
-  let res = 3;
+  let res = 1;
   switch (mode) {
     case RoomMode.OvO:
       res = 1;

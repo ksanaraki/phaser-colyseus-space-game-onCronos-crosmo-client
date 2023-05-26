@@ -198,7 +198,7 @@ class PlayScene extends Phaser.Scene {
 		this._enemies.runChildUpdate = true
 
 		//sets up background
-		this._backImg = Config.graphicAssets.background[0].name;
+		this._backImg = Config.graphicAssets.background[this._firstBackImgRandom].name;
 		this._backgroundSprite = this.add.sprite(0, 0, Config.graphicAssets.background[this._firstBackImgRandom].name)
 		this._backgroundSprite.displayWidth = Config.gamePros.screenWidth
 		this._backgroundSprite.displayHeight = Config.gamePros.screenHeight
@@ -332,7 +332,7 @@ class PlayScene extends Phaser.Scene {
 		this.time.addEvent({
 			delay: 1000,
 			callback: () => {
-				this._backBg = Config.soundAssets.bg[0].name;
+				this._backBg = Config.soundAssets.bg[this._firstBgRandom].name;
 				this._bgSound = this.sound.add(Config.soundAssets.bg[this._firstBgRandom].name);
 				this._bgSound.setLoop(true);
 			},
@@ -518,11 +518,29 @@ class PlayScene extends Phaser.Scene {
 				return
 			}
 			if (asteroidOrEnemy._group === 'enemy') {
-				bullet._owner.Score += 10
+				bullet._owner.Score += 10;
+				if(this._network && bullet._bulletKind !== 'atomic') {
+					this._network.recordScore(
+						bullet._owner._account,
+						bullet._owner._tokenId,
+						bullet._owner._shipName,
+						bullet._owner._tier,
+						bullet._owner._score,
+					 )
+				}
 				this.spawnRandomAirdrop(asteroidOrEnemy, bullet._owner, this._airdropPercentEnemy)
 			}
 			if (asteroidOrEnemy._group === 'boss') {
-				bullet._owner.Score += 80
+				bullet._owner.Score += 80;
+				if(this._network && bullet._bulletKind !== 'atomic') {
+					this._network.recordScore(
+						bullet._owner._account,
+						bullet._owner._tokenId,
+						bullet._owner._shipName,
+						bullet._owner._tier,
+						bullet._owner._score,
+					 )
+				}
 				this.spawnRandomAirdrop(asteroidOrEnemy, bullet._owner, this._airdropPercentBoss)
 			}
 
@@ -884,7 +902,8 @@ class PlayScene extends Phaser.Scene {
 		this.scene.stop("text")
 		this.scene.launch("gameOver", {
 			score: this._myShip.Score,
-			paid: this._myShip.paid
+			paid: this._myShip._paid,
+			accuracy: this._myShip._wasted != 0 ? (this._myShip._hits / this._myShip._wasted) : 0
 		})
 	}
 
@@ -1043,7 +1062,8 @@ class PlayScene extends Phaser.Scene {
 			this.newMission()
 		}
 		if (enemyCount <= 0 && this._readyNewLevel === true) {
-			this.nextLevel()
+			this.changeEnvPerLevel();
+			this.nextLevel();
 		}
 		if (this._myShip && this._network) this._myShip.updateToServer(this._network);
 
@@ -1057,7 +1077,7 @@ class PlayScene extends Phaser.Scene {
 	}
 
 	changeEnvPerLevel() {
-		console.log(`changed`);
+		console.log(`env changed`);
 		const bgImageRes = (this._level + this._firstBackImgRandom) % Config.graphicAssets.background.length;
 		const bgMusicRes = (this._level + this._firstBgRandom) % Config.soundAssets.bg.length;
 

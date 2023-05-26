@@ -139,7 +139,6 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
 
   useEffect(() => {
     const init = async () => {
-      // const res = await api.score.saveScore(account, tokenId.toString(), shipName, tier)
       store.dispatch(setGameOver(false))
 
       const craftStatus = await shooterInstance["getCraftStatus"](tokenId)
@@ -159,7 +158,7 @@ const MainUI = ({ account, web3Provider, chainId, setBg, setIsGamePlaying }) => 
       const scoreRes = await api.score.getScores(period, league)
       setScores(scoreRes.data)
     }
-    // init()
+    init()
   }, [period, league])
 
 

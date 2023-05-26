@@ -142,11 +142,11 @@ const GameUI = ({ specialKey }) => {
         position: `fixed`,
         justifyContent: 'flex-end',
         right: {
-          xs: shieldPercent == 0 ? `-110px` : `-40px`,
-          sm: shieldPercent == 0 ? `-110px` : `-40px`,
-          md: shieldPercent == 0 ? `-240px` : `-175px`,
-          lg: shieldPercent == 0 ? `-280px` : `-205px`,
-          xl: shieldPercent == 0 ? `-370px` : `-300px`
+          xs: shieldPercent == 0 ? `-100px` : `-40px`,
+          sm: shieldPercent == 0 ? `-100px` : `-40px`,
+          md: shieldPercent == 0 ? `-220px` : `-175px`,
+          lg: shieldPercent == 0 ? `-260px` : `-205px`,
+          xl: shieldPercent == 0 ? `-340px` : `-300px`
         }
       }}>
         {bulletPercent != 0 && <Box sx={{

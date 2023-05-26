@@ -46,7 +46,7 @@ export const connectAuto = async () => {
 }
 
 export const connectAccount = async (firstRun = false, type = "") => {
-    let providerOptions: any = {
+    const providerOptions = {
       injected: {
         display: {
           logo: "https://github.com/MetaMask/brand-resources/raw/master/SVG/metamask-fox.svg",
@@ -54,27 +54,25 @@ export const connectAccount = async (firstRun = false, type = "") => {
           description: "Connect with MetaMask in your browser",
         },
         package: null,
+      },
+      walletconnect: {
+        package: WalletConnectProvider, // required
+        options: {
+          chainId: config.configVars.mainnet.chainId,
+          rpc: {
+            [config.configVars.mainnet.chainId]: config.configVars.mainnet.rpcUrl,
+          },
+          network: "cronos",
+          metadata: {
+            icons: ["https://ebisusbay.com/vector%20-%20face.svg"],
+          },
+        }
       }
     };
 
-    providerOptions.walletconnect = {
-      package: WalletConnectProvider, // required
-      options: {
-        // chainId: 4,
-        chainId: 25,
-        rpc: {
-          4: "https://rinkeby.infura.io/v3/33f72aa1b4f441bc8f3a244da53533b4",
-          25: "https://evm.cronos.org/",
-        },
-        network: "cronos",
-        metadata: {
-          icons: ["https://ebisusbay.com/vector%20-%20face.svg"],
-        },
-      },
-    };
-
     const web3Modal = new Web3Modal({
-      cacheProvider: true,
+      cacheProvider: false,
+      disableInjectedProvider: false,
       providerOptions, // required
     });
 

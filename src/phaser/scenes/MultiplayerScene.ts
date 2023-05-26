@@ -792,13 +792,29 @@ class MultiplayerScene extends Phaser.Scene {
 				return
 			}
 			if (asteroidOrEnemy._group === 'enemy') {
-				bullet._owner.Score += 10
-				console.log("spawnRandomAirdrop1", bullet);
+				bullet._owner.Score += 10;
+				if(this._network) {
+					this._network.recordScore(
+						bullet._owner._account,
+						bullet._owner._tokenId,
+						bullet._owner._shipName,
+						bullet._owner._tier,
+						bullet._owner._score,
+					 )
+				}
 				this.spawnRandomAirdrop(asteroidOrEnemy, bullet._owner, this._airdropPercentEnemy)
 			}
 			if (asteroidOrEnemy._group === 'boss') {
-				bullet._owner.Score += 80
-				console.log("spawnRandomAirdrop2", bullet);
+				bullet._owner.Score += 80;
+				if(this._network) {
+					this._network.recordScore(
+						bullet._owner._account,
+						bullet._owner._tokenId,
+						bullet._owner._shipName,
+						bullet._owner._tier,
+						bullet._owner._score,
+					 )
+				}
 				this.spawnRandomAirdrop(asteroidOrEnemy, bullet._owner, this._airdropPercentBoss)
 			}
 
@@ -1300,7 +1316,8 @@ class MultiplayerScene extends Phaser.Scene {
 		this.scene.stop("text")
 		this.scene.launch("gameOver", {
 			score: this._myShip.Score,
-			paid: this._myShip.paid
+			paid: this._myShip._paid,
+			accuracy: this._myShip._wasted != 0 ? (this._myShip._hits / this._myShip._wasted) : 0
 		})
 	}
 
