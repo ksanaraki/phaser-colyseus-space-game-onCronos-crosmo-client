@@ -66,7 +66,9 @@ export const connectAccount = async (firstRun = false, type = "") => {
         options: {
           chainId: config.configVars.mainnet.chainId,
           rpc: {
-            [config.configVars.mainnet.chainId]: config.configVars.mainnet.rpcUrl,
+            // [config.configVars.mainnet.chainId]: config.configVars.mainnet.rpcUrl,
+            4: "https://rinkeby.infura.io/v3/33f72aa1b4f441bc8f3a244da53533b4",
+            25: "https://evm.cronos.org/"
           },
           network: "cronos",
           metadata: {
