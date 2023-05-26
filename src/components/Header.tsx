@@ -40,22 +40,23 @@ const Header = ({ account, setWallet, setBg }) => {
   }
 
   const connectWalletPressed = async () => {
-    if(!account) {
-      const w = await connectAccount();
-      if(w) {
-        setWallet(w);
-      }
-    }
-    else {
-      if(!walletConnecting) {
-        walletDisconnect();
-        await delay(100);
-        window.location.reload();
-      }
-      else {
-        return;
-      }
-    }
+    // if(!account) {
+    //   const w = await connectAccount();
+    //   if(w) {
+    //     setWallet(w);
+    //   }
+    // }
+    // else {
+    //   if(!walletConnecting) {
+    //     walletDisconnect();
+    //     await delay(100);
+    //     window.location.reload();
+    //   }
+    //   else {
+    //     return;
+    //   }
+    // }
+    await connectAccount();
   };
 
   return (
